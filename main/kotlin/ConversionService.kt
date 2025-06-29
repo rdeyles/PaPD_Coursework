@@ -46,15 +46,18 @@ class ConversionService {
      *
      * User inputs request -125 degrees Kelvin to Fahrenheit --> "Please enter a number, ensure the number is above 0 degrees Kelvin: "
      *
-     * @return String -- either "Exit" when user decides to terminate the process early, or outlining the results of the conversion with the return value of conversionService().
+     * @return String -- either "Exiting the temperature process" when user decides to terminate the process early, or outlining the results of the conversion with the return value of conversionService().
      */
     fun temperatureConversion(): String {
-        val units: Array<String> = arrayOf("1", "2", "3", "Exit") // Listing choice of units as numbers for user-friendly inputs. Exit left as a word so accidental exit is unlikely.
+        val units: Array<String> = arrayOf("1", "2", "3") // Listing choice of units as numbers for user-friendly inputs.
+        val exitOptions: Array<String> = arrayOf("Exit", "exit", "End", "end", "Cancel", "cancel") // Allow a few likely exit commands.
         val unitsToPresent: Array<String> = arrayOf("Celsius", "Fahrenheit", "Kelvin") // Listing units as words for messages to user and passing to conversionService().
         println("""You are able to convert between the following units:
         |1. Celsius
         |2. Fahrenheit
         |3. Kelvin
+        |
+        |At any time, type exit to end the temperature conversion process early.
     """.trimMargin())
         var confirm: String = ""
         var firstUnit: String = ""
@@ -62,48 +65,74 @@ class ConversionService {
 
         /* Validation to ensure units chosen are from the options in the array.
         Loop ends when user confirms they are happy with the chosen units.
+        Exit function if user inputs "Exit" or "exit" at any stage.
+        Must be the full word to avoid accidental exits.
          */
         while (confirm != "Y") {
-            firstUnit = getUserInput("Please enter the number of which unit you wish to convert from (type Exit if you wish to go back to the main menu): ")
+            firstUnit = getUserInput("Please enter the number of which unit you wish to convert from: ")
             while (firstUnit !in units) {
-                firstUnit = getUserInput("That is not one of the choices, please type 1, 2, 3 or Exit if you want to go back.")
+                if (firstUnit in exitOptions) {
+                    return "Exiting the temperature conversion process."
+                }
+                else {
+                    firstUnit = getUserInput("That is not one of the choices, please type 1, 2, 3: ")
+                }
             }
-            if (firstUnit == "Exit") {
-                return "Exit"
-            }
-            secondUnit = getUserInput("Please enter the number of which unit you wish to convert to (type Exit if you wish to go back to the main menu): ")
+            secondUnit = getUserInput("Please enter the number of which unit you wish to convert to: ")
             while (secondUnit !in units || secondUnit == firstUnit) {
                 if (secondUnit !in units) {
-                    secondUnit = getUserInput("That is not one of the choices, please type either 1, 2, 3, or Exit if you want to go back.")
+                    if (secondUnit in exitOptions) {
+                        return "Exiting the temperature conversion process."
+                    }
+                    else {
+                        secondUnit = getUserInput("That is not one of the choices, please type either 1, 2, 3: ")
+                    }
                 }
                 else if (secondUnit == firstUnit) {
-                    secondUnit = getUserInput("You already picked this unit to convert from. Pick another option or type Exit if you want to go back.") // User can't choose the same units twice. It would be meaningless.
+                    secondUnit = getUserInput("You already picked this unit to convert from. Pick another option: ") // User can't choose the same units twice. It would be meaningless.
                 }
-            }
-            if (secondUnit == "Exit") {
-                return "Exit"
             }
             println("You have selected to convert ${unitsToPresent[firstUnit.toInt() - 1]} to ${unitsToPresent[secondUnit.toInt() - 1]}.") // Convert user inputs to int for accessing worded temp unit elements.
             confirm = getUserInput("Please confirm if this is correct (Y/N): ")
-            while (confirm != "Y" && confirm != "N") { // Avoiding any inputs other than Y or N
-                confirm = getUserInput("Please enter Y for yes or N for no: ")
+            while (confirm !in arrayOf("Y", "N")) { // Avoiding any inputs other than Y or N
+                if (confirm in exitOptions) {
+                    return "Exiting the temperature conversion process."
+                }
+                else {
+                    confirm = getUserInput("Please enter Y for yes, N for no, or Exit: ")
+                }
             }
         }
         var temperatureInput: String = getUserInput("Please enter the temperature to convert: ")
         when (firstUnit) { // Validating input can be converted to Double and is above absolute zero (coldest possible temp).
             "1" -> {
                 while (temperatureInput.toDoubleOrNull() == null || temperatureInput.toDouble() < -273.15) {
-                    temperatureInput = getUserInput("Please enter a number, ensure the value is above -273.15 degrees Celsius: ")
+                    if (temperatureInput in exitOptions) {
+                        return "Exiting the temperature conversion process."
+                    }
+                    else {
+                        temperatureInput = getUserInput("Please enter a number, ensure the value is above -273.15 degrees Celsius: ")
+                    }
                 }
             }
             "2" -> {
                 while (temperatureInput.toDoubleOrNull() == null || temperatureInput.toDouble() < -459.67) {
-                    temperatureInput = getUserInput("Please enter a number, ensure the value is above -459.67 degrees Fahrenheit: ")
+                    if (temperatureInput in exitOptions) {
+                        return "Exiting the temperature conversion process."
+                    }
+                    else {
+                        temperatureInput = getUserInput("Please enter a number, ensure the value is above -459.67 degrees Fahrenheit: ")
+                    }
                 }
             }
             "3" -> {
                 while (temperatureInput.toDoubleOrNull() == null || temperatureInput.toDouble() < 0) {
-                    temperatureInput = getUserInput("Please enter a number, ensure the number is above 0 degrees Kelvin: ")
+                    if (temperatureInput in exitOptions) {
+                        return "Exiting the temperature conversion process."
+                    }
+                    else {
+                        temperatureInput = getUserInput("Please enter a number, ensure the number is above 0 degrees Kelvin: ")
+                    }
                 }
             }
         }
