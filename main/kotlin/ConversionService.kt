@@ -50,7 +50,7 @@ class ConversionService {
      */
     fun temperatureConversion(): String {
         val units: Array<String> = arrayOf("1", "2", "3") // Listing choice of units as numbers for user-friendly inputs.
-        val exitOptions: Array<String> = arrayOf("Exit", "exit", "End", "end", "Cancel", "cancel") // Allow a few likely exit commands.
+        val exitOptions: Array<String> = arrayOf("Exit", "exit", "End", "end", "Cancel", "cancel", "Stop", "stop") // Allow a few likely exit commands.
         val unitsToPresent: Array<String> = arrayOf("Celsius", "Fahrenheit", "Kelvin") // Listing units as words for messages to user and passing to conversionService().
         println("""You are able to convert between the following units:
         |1. Celsius
@@ -68,7 +68,7 @@ class ConversionService {
         Exit function if user inputs "Exit" or "exit" at any stage.
         Must be the full word to avoid accidental exits.
          */
-        while (confirm != "Y") {
+        while (confirm !in arrayOf("Y", "y")) {
             firstUnit = getUserInput("Please enter the number of which unit you wish to convert from: ")
             while (firstUnit !in units) {
                 if (firstUnit in exitOptions) {
@@ -94,7 +94,7 @@ class ConversionService {
             }
             println("You have selected to convert ${unitsToPresent[firstUnit.toInt() - 1]} to ${unitsToPresent[secondUnit.toInt() - 1]}.") // Convert user inputs to int for accessing worded temp unit elements.
             confirm = getUserInput("Please confirm if this is correct (Y/N): ")
-            while (confirm !in arrayOf("Y", "N")) { // Avoiding any inputs other than Y or N
+            while (confirm !in arrayOf("Y", "y", "N", "n")) { // Avoiding any inputs other than Y or N
                 if (confirm in exitOptions) {
                     return "Exiting the temperature conversion process."
                 }
