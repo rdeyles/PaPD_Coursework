@@ -110,3 +110,54 @@ fun conversion(): String {
     valueConverted = round(valueConverted * 100.0) / 100.0
     return ("${valueToConvert} degrees ${firstUnit} = ${valueConverted} degrees ${secondUnit}.")
 }
+
+/**
+ * Main function to control which command function is called.
+ *
+ * ## Input
+ * User prompt to input a choice between Sum, Conversion or Factorial functions.
+ *
+ * ## Validation
+ * User input request repeated if not matching one of the keywords.
+ * @return result of the chosen command function.
+ * E.g.,
+ *
+ * user input == 4 -> "Please type either Sum, Factorial or Conversion."
+ *
+ * user input == sum -> "Please type either Sum, Factorial or Conversion."
+ *
+ * user input == Sum -> "The sum of cube numbers up to <n> cubed is ..."
+ *
+ * user input == Conversion -> "<x> degrees <Fahrenheit/Celsius/Kelvin> is <y> degrees <Fahrenheit/Celsius/Kelvin>."
+ */
+fun main(): Unit {
+    var choice: String = getUserInput("""
+        Welcome!
+        You are able to choose one of three commands:
+        Sum: Computes the sum of cubes of consecutive integers.
+        Factorial: Computes the sum of the factorials of three given integers.
+        Conversion: Converts a temperature from one unit to another: Celcius, Fahrenheit or Kelvin.
+
+        Please select the command you want to run by typing the name as seen above.
+        """)
+    val choices: Array<String> = arrayOf("Sum", "Factorial", "Conversion")
+    while (choice !in choices) {
+        choice = getUserInput("""
+        Oh, it doesn't look like that was correct.
+        Please type either Sum, Factorial or Conversion exactly as written here.
+        """)
+    }
+    var commandResult: String = ""
+    when (choice) {
+        "Sum" -> {
+            commandResult = "sum"
+        }
+        "Factorial" -> {
+            commandResult = "factorial"
+        }
+        "Conversion" -> {
+            commandResult = conversion()
+        }
+    }
+    print(commandResult)
+}
