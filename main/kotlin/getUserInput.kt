@@ -11,7 +11,7 @@ import kotlin.String
  *
  * @param message clear and concise to prompt the intended response.
  *
- * @return readln() user input, input validation will be handled by the command functions.
+ * @return readln() user input, input validation will be handled by the command classes.
  */
 fun getUserInput(message: String): String {
     print(message)
