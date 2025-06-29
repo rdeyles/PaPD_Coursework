@@ -1,3 +1,4 @@
+import kotlin.String
 import kotlin.math.round
 
 /**
@@ -19,144 +20,166 @@ fun getUserInput(message: String): String {
 }
 
 /**
- * Converts between two temperature units based on user input. Validates input and reprompts until the input is the correct format.
+ * Converts between units of temperature, chosen from Celsius, Fahrenheit and Kelvin.
  *
- * ## Preconditions:
+ * Separation of concerns: input validation handled by temperatureConversion() -- no values below absolute zero should be passed as arguments.
+ *
+ * ## Examples:
+ *
+ * conversionService("Kelvin", "Celsius", 256.0) = -17.15
+ *
+ * conversionService("Fahrenheit", "Celsius", -143.2) = -97.33
+ *
+ * @param firstUnit -- temperature unit to convert from.
+ * @param secondUnit -- temperature unit to convert to.
+ * @param temperatureToConvert -- temperature value to convert from.
+ * @return temperatureConverted -- converted temperature rounded to 2 decimal places.
+ */
+fun conversionService(firstUnit: String, secondUnit: String, temperatureToConvert: Double): Double {
+    var temperatureConverted: Double = 0.0
+    when (firstUnit) {
+        "Celsius" if secondUnit == "Fahrenheit" -> temperatureConverted = temperatureToConvert * 9 / 5 + 32
+        "Fahrenheit" if secondUnit == "Celsius" -> temperatureConverted = (temperatureToConvert - 32) * 5 / 9
+        "Celsius" if secondUnit == "Kelvin" -> temperatureConverted = temperatureToConvert + 273.15
+        "Kelvin" if secondUnit == "Celsius" -> temperatureConverted = temperatureToConvert - 273.15
+        "Fahrenheit" if secondUnit == "Kelvin" -> temperatureConverted = (temperatureToConvert - 32) * 5 / 9 + 273.15
+        "Kelvin" if secondUnit == "Fahrenheit" -> temperatureConverted = (temperatureToConvert - 273.15) * 9 / 5 + 32
+    }
+    temperatureConverted = round(temperatureConverted * 100.0) / 100.0
+    return temperatureConverted
+}
+
+/**
+ * Gathers user input and performs input validation before calling conversionService():
+ *
+ * Input units must be from given options and input temperature must be no less than absolute zero.
  *
  * In the unlikely case of attempting to convert an extremely large temperature, input values exceeding 1,193,946,452 may return inaccurate conversions.
  *
  * User input, no parameters.
+ *
  * ## Examples:
  *
  * User inputs request 125 degrees Celsius to Kelvin --> "125 degrees Celsius = 398.15 degrees Kelvin."
  *
- * User inputs request -125 degrees Kelvin to Fahrenheit --> "Please enter a number, remember Kelvin starts at 0: "
+ * User inputs request -125 degrees Kelvin to Fahrenheit --> "Please enter a number, ensure the number is above 0 degrees Kelvin: "
  *
- * @return String -- either "Exit" when user decides to terminate the process early, or the results of the conversion.
+ * @return String -- either "Exit" when user decides to terminate the process early, or outlining the results of the conversion with the return value of conversionService().
  */
-
-fun conversion(): String {
-    val units: Array<String> = arrayOf("Celsius", "Fahrenheit", "Kelvin", "Exit")
-    println("You are able to convert between Celsius, Fahrenheit and Kelvin.")
+fun temperatureConversion(): String {
+    val units: Array<String> = arrayOf("1", "2", "3", "Exit") // Listing choice of units as numbers for user-friendly inputs. Exit left as a word so accidental exit is unlikely.
+    val unitsToPresent: Array<String> = arrayOf("Celsius", "Fahrenheit", "Kelvin") // Listing units as words for messages to user and passing to conversionService().
+    println("""You are able to convert between the following units:
+        |1. Celsius
+        |2. Fahrenheit
+        |3. Kelvin
+    """.trimMargin())
     var confirm: String = ""
     var firstUnit: String = ""
     var secondUnit: String = ""
+
+    /* Validation to ensure units chosen are from the options in the array.
+    Loop ends when user confirms they are happy with the chosen units.
+     */
     while (confirm != "Y") {
-        firstUnit = getUserInput("Please enter which unit you wish to convert from (type Exit if you wish to go back to the main menu): ")
+        firstUnit = getUserInput("Please enter the number of which unit you wish to convert from (type Exit if you wish to go back to the main menu): ")
         while (firstUnit !in units) {
-            getUserInput("That is not one of the choices, please type either Celsius, Fahrenheit, Kelvin or Exit if you want to go back.")
+            firstUnit = getUserInput("That is not one of the choices, please type 1, 2, 3 or Exit if you want to go back.")
         }
         if (firstUnit == "Exit") {
             return "Exit"
         }
-        secondUnit = getUserInput("Please enter which unit you wish to convert to (type Exit if you wish to go back to the main menu): ")
-        while (firstUnit !in units) {
-            getUserInput("That is not one of the choices, please type either Celsius, Fahrenheit, Kelvin or Exit if you want to go back.")
+        secondUnit = getUserInput("Please enter the number of which unit you wish to convert to (type Exit if you wish to go back to the main menu): ")
+        while (secondUnit !in units || secondUnit == firstUnit) {
+            if (secondUnit !in units) {
+                secondUnit = getUserInput("That is not one of the choices, please type either 1, 2, 3, or Exit if you want to go back.")
+            }
+            else if (secondUnit == firstUnit) {
+                secondUnit = getUserInput("You already picked this unit to convert from. Pick another option or type Exit if you want to go back.") // User can't choose the same units twice. It would be meaningless.
+            }
         }
         if (secondUnit == "Exit") {
             return "Exit"
         }
-        println("You have selected to convert ${firstUnit} to ${secondUnit}.")
+        println("You have selected to convert ${unitsToPresent[firstUnit.toInt() - 1]} to ${unitsToPresent[secondUnit.toInt() - 1]}.") // Convert user inputs to int for accessing worded temp unit elements.
         confirm = getUserInput("Please confirm if this is correct (Y/N): ")
         while (confirm != "Y" && confirm != "N") { // Avoiding any inputs other than Y or N
             confirm = getUserInput("Please enter Y for yes or N for no: ")
         }
     }
-    var valueInput: String = getUserInput("Please enter the temperature to convert: ")
-    if (firstUnit == "Celsius" && secondUnit == "Kelvin") {
-        while (valueInput.toDoubleOrNull() == null || valueInput.toDouble() < -273.15) {
-            valueInput = getUserInput("-273.15 degrees Celsius is the coldest possible temperature. Please enter a larger number: ")
-        }
-    }
-    when (firstUnit) {
-        "Fahrenheit" if secondUnit == "Kelvin" -> {
-            while (valueInput.toDoubleOrNull() == null || valueInput.toDouble() < -459.67) {
-                valueInput = getUserInput("-273.15 degrees Celsius is the coldest possible temperature. Please enter a larger number: ")
+    var temperatureInput: String = getUserInput("Please enter the temperature to convert: ")
+    when (firstUnit) { // Validating input can be converted to Double and is above absolute zero (coldest possible temp).
+        "1" -> {
+            while (temperatureInput.toDoubleOrNull() == null || temperatureInput.toDouble() < -273.15) {
+                temperatureInput = getUserInput("Please enter a number, ensure the value is above -273.15 degrees Celsius: ")
             }
         }
-        "Celsius", "Fahrenheit" -> {
-            while (valueInput.toDoubleOrNull() == null) {
-                valueInput = getUserInput("Please enter a number: ")
+        "2" -> {
+            while (temperatureInput.toDoubleOrNull() == null || temperatureInput.toDouble() < -459.67) {
+                temperatureInput = getUserInput("Please enter a number, ensure the value is above -459.67 degrees Fahrenheit: ")
             }
         }
-        "Kelvin" -> {
-            while (valueInput.toDoubleOrNull() == null || valueInput.toDouble() < 0) {
-                valueInput = getUserInput("Please enter a number, remember Kelvin starts at 0: ")
+        "3" -> {
+            while (temperatureInput.toDoubleOrNull() == null || temperatureInput.toDouble() < 0) {
+                temperatureInput = getUserInput("Please enter a number, ensure the number is above 0 degrees Kelvin: ")
             }
         }
     }
-    val valueToConvert: Double = valueInput.toDouble()
-    var valueConverted: Double = 0.0
-    when (firstUnit) {
-        "Celsius" if secondUnit == "Fahrenheit" -> {
-            valueConverted = valueToConvert * 9 / 5 + 32
-        }
-        "Fahrenheit" if secondUnit == "Celsius" -> {
-            valueConverted = (valueToConvert - 32) * 5 / 9
-        }
-        "Celsius" if secondUnit == "Kelvin" -> {
-            valueConverted = valueToConvert + 273.15
-        }
-        "Kelvin" if secondUnit == "Celsius" -> {
-            valueConverted = valueToConvert - 273.15
-        }
-        "Fahrenheit" if secondUnit == "Kelvin" -> {
-            valueConverted = (valueToConvert - 32) * 5 / 9 + 273.15
-        }
-        "Kelvin" if secondUnit == "Fahrenheit" -> {
-            valueConverted = (valueToConvert - 273.15) * 9 / 5 + 32
-        }
-    }
-    valueConverted = round(valueConverted * 100.0) / 100.0
-    return ("${valueToConvert} degrees ${firstUnit} = ${valueConverted} degrees ${secondUnit}.")
+    val temperatureToConvert: Double = temperatureInput.toDouble()
+    firstUnit = unitsToPresent[firstUnit.toInt() - 1]
+            secondUnit = unitsToPresent[secondUnit.toInt() - 1]
+    return ("$temperatureToConvert degrees $firstUnit = ${conversionService(firstUnit, secondUnit, temperatureToConvert)} degrees $secondUnit.")
 }
 
 /**
  * Main function to control which command function is called.
  *
  * ## Input
- * User prompt to input a choice between Sum, Conversion or Factorial functions.
+ * User prompt to input a choice between Sum, Factorial or Conversion functions (1, 2 or 3).
  *
  * ## Validation
- * User input request repeated if not matching one of the keywords.
- * @return result of the chosen command function.
+ * User input request repeated if not matching one of the options.
+ *
  * E.g.,
+ *  *
+ *  * user input == "4" -> "Please type 1, 2, or 3: "
+ *  *
+ *  * user input == "sum" -> "Please type 1, 2, or 3."
+ *  *
+ *  * user input == "1" -> "The sum of cube numbers up to <n> cubed is ..."
+ *  *
+ *  * user input == "3" -> "<x> degrees <Fahrenheit/Celsius/Kelvin> is <y> degrees <Fahrenheit/Celsius/Kelvin>."
  *
- * user input == 4 -> "Please type either Sum, Factorial or Conversion."
- *
- * user input == sum -> "Please type either Sum, Factorial or Conversion."
- *
- * user input == Sum -> "The sum of cube numbers up to <n> cubed is ..."
- *
- * user input == Conversion -> "<x> degrees <Fahrenheit/Celsius/Kelvin> is <y> degrees <Fahrenheit/Celsius/Kelvin>."
+ * @return result of the chosen command function.
  */
 fun main(): Unit {
     var choice: String = getUserInput("""
         Welcome!
         You are able to choose one of three commands:
-        Sum: Computes the sum of cubes of consecutive integers.
-        Factorial: Computes the sum of the factorials of three given integers.
-        Conversion: Converts a temperature from one unit to another: Celcius, Fahrenheit or Kelvin.
+        1. Computing the sum of cubes of consecutive positive integers up to a provided value.
+        2. Computing the sum of the factorials of three given positive integers.
+        3. Converting a temperature from one unit to another: Celcius, Fahrenheit or Kelvin.
 
-        Please select the command you want to run by typing the name as seen above.
-        """)
-    val choices: Array<String> = arrayOf("Sum", "Factorial", "Conversion")
+        Please select the command you want to run by typing the name as seen above by typing the number: 
+        """.trimMargin())
+    // Validation to ensure only a number from the options is chosen.
+    val choices: Array<String> = arrayOf("1", "2", "3") // Numbers to minimise input requirements.
     while (choice !in choices) {
         choice = getUserInput("""
         Oh, it doesn't look like that was correct.
-        Please type either Sum, Factorial or Conversion exactly as written here.
+        Please type either 1, 2 or 3: 
         """)
     }
     var commandResult: String = ""
     when (choice) {
-        "Sum" -> {
+        "1" -> {
             commandResult = "sum"
         }
-        "Factorial" -> {
+        "2" -> {
             commandResult = "factorial"
         }
-        "Conversion" -> {
-            commandResult = conversion()
+        "3" -> {
+            commandResult = temperatureConversion()
         }
     }
     print(commandResult)
