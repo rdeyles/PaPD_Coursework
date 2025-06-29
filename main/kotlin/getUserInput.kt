@@ -14,6 +14,6 @@ import kotlin.String
  * @return readln() user input, input validation will be handled by the command classes.
  */
 fun getUserInput(message: String): String {
-    print(message)
+    println(message)
     return readln()
 }

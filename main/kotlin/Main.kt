@@ -20,39 +20,60 @@
  * @return result of the chosen command function.
  */
 fun main(): Unit {
-    var choice: String = getUserInput("""
-        Welcome!
-        You are able to choose one of three commands:
-        1. Computing the sum of cubes of consecutive positive integers up to a provided value.
-        2. Computing the sum of the factorials of three given positive integers.
-        3. Converting a temperature from one unit to another: Celcius, Fahrenheit or Kelvin.
+    println("Welcome!")
+    var endProgram: String = "1"
+    while (endProgram == "1") {
+        var choice: String = getUserInput(
+            """
+                Main Menu
+                
+                You are able to choose one of three commands:
+                1. Computing the sum of cubes of consecutive positive integers up to a provided value.
+                2. Computing the sum of the factorials of three given positive integers.
+                3. Converting a temperature from one unit to another: Celcius, Fahrenheit or Kelvin.
+        
+                Please select the command you want to run by typing the name as seen above by typing the number: 
+                """.trimMargin()
+        )
+        // Validation to ensure only a number from the options is chosen.
+        val choices: Array<String> = arrayOf("1", "2", "3") // Numbers to minimise input requirements.
+        while (choice !in choices) {
+            choice = getUserInput(
+                """
+                Oh, it doesn't look like that was correct.
+                Please type either 1, 2 or 3: 
+                """
+            )
+        }
+        var commandResult: String = ""
+        when (choice) {
+            "1" -> {
+                //val sumCommand: Sum()
+                //commandResult = sumCommand.completehere
+                commandResult = "Sum" // Placeholder to keep the code functional before Guido integrates the Sum class.
+            }
 
-        Please select the command you want to run by typing the name as seen above by typing the number: 
+            "2" -> {
+                //val factorialCommand: Factorial = Factorial()
+                //commandResult = factorialCommand.completehere
+                commandResult =
+                    "Factorial" // Placeholder to keep the code functional before Guido integrates the Factorial class.
+            }
+
+            "3" -> {
+                val conversionCommand: ConversionService = ConversionService()
+                commandResult = conversionCommand.temperatureConversion()
+            }
+        }
+        println(commandResult)
+        endProgram = getUserInput("""Please choose from the following options:
+            |1. Main menu.
+            |2. End program.
         """.trimMargin())
-    // Validation to ensure only a number from the options is chosen.
-    val choices: Array<String> = arrayOf("1", "2", "3") // Numbers to minimise input requirements.
-    while (choice !in choices) {
-        choice = getUserInput("""
-        Oh, it doesn't look like that was correct.
-        Please type either 1, 2 or 3: 
-        """)
-    }
-    var commandResult: String = ""
-    when (choice) {
-        "1" -> {
-            //val sumCommand: Sum()
-            //commandResult = sumCommand.completehere
-            commandResult = "Sum" // Placeholder to keep the code functional before Guido integrates the Sum class.
-        }
-        "2" -> {
-            //val factorialCommand: Factorial = Factorial()
-            //commandResult = factorialCommand.completehere
-            commandResult = "Factorial" // Placeholder to keep the code functional before Guido integrates the Factorial class.
-        }
-        "3" -> {
-            val conversionCommand: ConversionService = ConversionService()
-            commandResult = conversionCommand.temperatureConversion()
+        while (endProgram !in arrayOf("1", "2")) {
+            endProgram = getUserInput(("Please type 1 or 2: "))
         }
     }
-    print(commandResult)
+    println("Thank you. Goodbye!")
+    return
 }
