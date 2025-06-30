@@ -19,6 +19,29 @@ class ConversionService {
      */
     fun conversionService(firstUnit: String, secondUnit: String, temperatureToConvert: Double): Double {
         var temperatureConverted: Double = 0.0
+        /* Version 1 - Uses nested when statements.
+        when (firstUnit) {
+            "Celsius" -> {
+                when (secondUnit) {
+                    "Fahrenheit" -> temperatureConverted = temperatureToConvert * 9 / 5 + 32
+                    "Kelvin" -> temperatureConverted = temperatureToConvert + 273.15
+                }
+            }
+
+            "Fahrenheit" ->
+                when (secondUnit) {
+                    "Celsius" -> temperatureConverted = (temperatureToConvert - 32) * 5 / 9
+                    "Kelvin" -> temperatureConverted = (temperatureToConvert - 32) * 5 / 9 + 273.15
+                }
+
+            "Kelvin" -> {
+                when (secondUnit) {
+                    "Celsius" -> temperatureConverted = temperatureToConvert - 273.15
+                    "Fahrenheit" -> temperatureConverted = (temperatureToConvert - 273.15) * 9 / 5 + 32
+                }
+            }
+        }*/
+        /* Version 2 -- Uses guard conditions as supported in Kotlin 2.2.0 (2.2.1 in preview).
         when (firstUnit) {
             "Celsius" if secondUnit == "Fahrenheit" -> temperatureConverted = temperatureToConvert * 9 / 5 + 32
             "Fahrenheit" if secondUnit == "Celsius" -> temperatureConverted = (temperatureToConvert - 32) * 5 / 9
@@ -26,6 +49,28 @@ class ConversionService {
             "Kelvin" if secondUnit == "Celsius" -> temperatureConverted = temperatureToConvert - 273.15
             "Fahrenheit" if secondUnit == "Kelvin" -> temperatureConverted = (temperatureToConvert - 32) * 5 / 9 + 273.15
             "Kelvin" if secondUnit == "Fahrenheit" -> temperatureConverted = (temperatureToConvert - 273.15) * 9 / 5 + 32
+        } */
+
+        /* Version 3 -- Uses Pair() to keep the code concise like with version 2.
+        when (Pair(firstUnit, secondUnit)) {
+            Pair("Celsius", "Fahrenheit") -> temperatureConverted = temperatureToConvert * 9 / 5 + 32
+            Pair("Fahrenheit", "Celsius") -> temperatureConverted = (temperatureToConvert - 32) * 5 / 9
+            Pair("Celsius", "Kelvin") -> temperatureConverted = temperatureToConvert + 273.15
+            Pair("Kelvin", "Celsius") -> temperatureConverted = temperatureToConvert - 273.15
+            Pair("Fahrenheit", "Kelvin") -> temperatureConverted = (temperatureToConvert - 32) * 5 / 9 + 273.15
+            Pair("Kelvin", "Fahrenheit") -> temperatureConverted = (temperatureToConvert - 273.15) * 9 / 5 + 32
+        }*/
+
+        temperatureConverted = when (Pair(firstUnit, secondUnit)) {
+            Pair("Celsius", "Fahrenheit") -> temperatureToConvert * 9 / 5 + 32
+            Pair("Fahrenheit", "Celsius") -> (temperatureToConvert - 32) * 5 / 9
+            Pair("Celsius", "Kelvin") -> temperatureToConvert + 273.15
+            Pair("Kelvin", "Celsius") -> temperatureToConvert - 273.15
+            Pair("Fahrenheit", "Kelvin") -> (temperatureToConvert - 32) * 5 / 9 + 273.15
+            Pair("Kelvin", "Fahrenheit") -> (temperatureToConvert - 273.15) * 9 / 5 + 32
+            else -> -999.9 /* Redundancy returning an arbitrary value below absolute zero in any units.
+            temperatureConversion() will not allow any value this low to be passed to conversionService().
+            Serving only to ensure the when statement is exhaustive. */
         }
         temperatureConverted = round(temperatureConverted * 100.0) / 100.0
         return temperatureConverted
@@ -139,6 +184,10 @@ class ConversionService {
         val temperatureToConvert: Double = temperatureInput.toDouble()
         firstUnit = unitsToPresent[firstUnit.toInt() - 1]
         secondUnit = unitsToPresent[secondUnit.toInt() - 1]
-        return ("$temperatureToConvert degrees $firstUnit = ${conversionService(firstUnit, secondUnit, temperatureToConvert)} degrees $secondUnit.")
+        val conversionResult: Double = conversionService(firstUnit, secondUnit, temperatureToConvert)
+        if (conversionResult == -999.9) {
+            return "Error: the units chosen were not entered correctly. Exiting the temperature conversion process."
+        }
+        return ("$temperatureToConvert degrees $firstUnit = $conversionResult degrees $secondUnit.")
     }
 }
