@@ -1,23 +1,23 @@
 /**
  * Main function to control which command function is called.
  *
- * ## Input
  * User prompt to input a choice between Sum, Factorial or Conversion functions (1, 2 or 3).
  *
- * ## Validation
  * User input request repeated if not matching one of the options.
+ *
+ * Prints the output of the chosen command, then returns to command selection or ends process based on user input.
  *
  * E.g.,
  *  *
- *  * user input == "4" -> "Please type 1, 2, or 3: "
+ *  * user inputs "4" --> "Please type 1, 2, or 3: "
  *  *
- *  * user input == "sum" -> "Please type 1, 2, or 3."
+ *  * user inputs "sum" --> "Please type 1, 2, or 3."
  *  *
- *  * user input == "1" -> "The sum of cube numbers up to <n> cubed is ..."
+ *  * user inputs "1" --> "The sum of cube numbers up to <n> cubed is ..."
  *  *
- *  * user input == "3" -> "<x> degrees <Fahrenheit/Celsius/Kelvin> is <y> degrees <Fahrenheit/Celsius/Kelvin>."
+ *  * user inputs "3" --> ConversionService called, main() prints "<x> degrees <Fahrenheit/Celsius/Kelvin> is <y> degrees <Fahrenheit/Celsius/Kelvin>."
  *
- * @return result of the chosen command function.
+ * @return Unit
  */
 fun main(): Unit {
     println("Welcome!")

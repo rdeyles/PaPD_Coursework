@@ -4,7 +4,7 @@ class ConversionService {
     /**
      * Converts between units of temperature, chosen from Celsius, Fahrenheit and Kelvin.
      *
-     * Separation of concerns: input validation handled by temperatureConversion() -- no values below absolute zero should be passed as arguments.
+     * All user input handling and validation is handled by temperatureConversion(). conversionService() handles the computation.
      *
      * ## Examples:
      *
@@ -55,13 +55,13 @@ class ConversionService {
      *
      * In the unlikely case of attempting to convert an extremely large temperature, input values exceeding 1,193,946,452 may return inaccurate conversions.
      *
-     * User input, no parameters.
+     * There are no parameters, the function requests user input throughout execution.
      *
      * ## Examples:
      *
-     * User inputs request 125 degrees Celsius to Kelvin --> "125 degrees Celsius = 398.15 degrees Kelvin."
+     * User inputs request 125 degrees Celsius to Kelvin --> function calls conversionService, then returns "125 degrees Celsius = 398.15 degrees Kelvin."
      *
-     * User inputs request -125 degrees Kelvin to Fahrenheit --> "Please enter a number, ensure the number is above 0 degrees Kelvin: "
+     * User inputs request -125 degrees Kelvin to Fahrenheit --> function calls conversionService, then returns "Please enter a number, ensure the number is above 0 degrees Kelvin: "
      *
      * @return String -- either "Exiting the temperature process" when user decides to terminate the process early, or outlining the results of the conversion with the return value of conversionService().
      */
@@ -111,7 +111,7 @@ class ConversionService {
             }
             println("You have selected to convert ${unitsToPresent[firstUnit.toInt() - 1]} to ${unitsToPresent[secondUnit.toInt() - 1]}.") // Convert user inputs to int for accessing worded temp unit elements.
             confirm = getUserInput("Please confirm if this is correct (Y/N): ")
-            while (confirm !in arrayOf("Y", "y", "N", "n")) { // Avoiding any inputs other than Y or N
+            while (confirm !in arrayOf("Y", "y", "N", "n")) { // Avoiding any inputs other than Y or N, allow lowercase.
                 if (confirm in exitOptions) {
                     return "Exiting the temperature conversion process."
                 }
@@ -121,7 +121,7 @@ class ConversionService {
             }
         }
         var temperatureInput: String = getUserInput("Please enter the temperature to convert: ")
-        when (firstUnit) { // Validating input can be converted to Double and is above absolute zero (coldest possible temp).
+        when (firstUnit) { // Validating input can be converted to Double and is above absolute zero (coldest possible temperature). Exit condition included at each branch.
             "1" -> {
                 while (temperatureInput.toDoubleOrNull() == null || temperatureInput.toDouble() < -273.15) {
                     if (temperatureInput in exitOptions) {
@@ -153,10 +153,14 @@ class ConversionService {
                 }
             }
         }
-        val temperatureToConvert: Double = temperatureInput.toDouble()
+        val temperatureToConvert: Double = temperatureInput.toDouble() // Converting validated input to Double.
+        // Access the correct worded unit from unitsToPresent to pass to conversionService()
         firstUnit = unitsToPresent[firstUnit.toInt() - 1]
         secondUnit = unitsToPresent[secondUnit.toInt() - 1]
         val conversionResult: Double = conversionService(firstUnit, secondUnit, temperatureToConvert)
+        /* While the validation ensures passing of no value below absolute zero in any unit, the if statement acts as a redundancy.
+        Exits the temperature conversion process in the case of an unexpected input being passed to conversionService().
+         */
         if (conversionResult == -999.9) {
             return "Error: the units chosen were not entered correctly. Exiting the temperature conversion process."
         }
