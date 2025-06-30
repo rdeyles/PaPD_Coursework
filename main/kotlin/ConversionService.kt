@@ -19,20 +19,6 @@ class ConversionService {
      */
     fun conversionService(firstUnit: String, secondUnit: String, temperatureToConvert: Double): Double {
         var temperatureConverted: Double = 0.0
-        /* Version 1 -- Uses guard conditions as supported in Kotlin 2.2.0 (2.2.1 in preview).
-        temperatureConverted = when (firstUnit) {
-            "Celsius" if secondUnit == "Fahrenheit" -> temperatureToConvert * 9 / 5 + 32
-            "Fahrenheit" if secondUnit == "Celsius" -> (temperatureToConvert - 32) * 5 / 9
-            "Celsius" if secondUnit == "Kelvin" -> temperatureToConvert + 273.15
-            "Kelvin" if secondUnit == "Celsius" -> temperatureToConvert - 273.15
-            "Fahrenheit" if secondUnit == "Kelvin" -> (temperatureToConvert - 32) * 5 / 9 + 273.15
-            "Kelvin" if secondUnit == "Fahrenheit" -> (temperatureToConvert - 273.15) * 9 / 5 + 32
-            else -> -999.9 /* Redundancy returning an arbitrary value below absolute zero in any units.
-            temperatureConversion() will not allow any value this low to be passed to conversionService().
-            Serving only to ensure the when statement is exhaustive. */
-        } */
-
-        //Version 2 -- Uses Pair() to keep the code concise like with version 2. Preferable.
         temperatureConverted = when (Pair(firstUnit, secondUnit)) {
             Pair("Celsius", "Fahrenheit") -> temperatureToConvert * 9 / 5 + 32
             Pair("Fahrenheit", "Celsius") -> (temperatureToConvert - 32) * 5 / 9
