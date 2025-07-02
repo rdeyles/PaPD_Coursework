@@ -1,3 +1,17 @@
+
+
+/**
+ * Defines a constant character for a new line.
+ * This is used to ensure consistent new line formatting across different output messages.
+ */
+const val NEW_LINE = '\n'
+
+/**
+ * Defines a constant empty string.
+ * Useful for initializing string variables or representing an absence of a message.
+ */
+const val EMPTY_MESSAGE = ""
+
 /**
  * Main function to control which command function is called.
  *
@@ -20,60 +34,85 @@
  * @return Unit
  */
 fun main(): Unit {
-    println("Welcome!")
-    var endProgram: String = "1"
+
+    // Welcome message printed at the start of the program.
+    printMessage("Welcome!", 4, NEW_LINE)
+    var endProgram: String = "1" // Controls the main program loop. "1" means continue, "2" means end.
+
+    // Main program loop: continues as long as the user wants to return to the main menu.
     while (endProgram == "1") {
-        var choice: String = getUserInput(
-            """
-                Main Menu
-                
-                You are able to choose one of three commands:
-                1. Computing the sum of cubes of consecutive positive integers up to a provided value.
-                2. Computing the sum of the factorials of three given positive integers.
-                3. Converting a temperature from one unit to another: Celcius, Fahrenheit or Kelvin.
-        
-                Please select the command you want to run by typing the name as seen above by typing the number: 
-                """.trimMargin()
-        )
+        printMainMenu() // Display the main menu options to the user.
+
+        // Get the user's choice for which command to run.
+        var choice:String = getUserInput("Please select the command you want to run by typing the number:",4)
+
         // Validation to ensure only a number from the options is chosen.
         val choices: Array<String> = arrayOf("1", "2", "3") // Numbers to minimise input requirements.
         while (choice !in choices) {
             choice = getUserInput(
-                """
-                Oh, it doesn't look like that was correct.
-                Please type either 1, 2 or 3: 
-                """
+                "Oh, it doesn't look like that was correct. Please type either 1, 2 or 3:",4
             )
         }
-        var commandResult: String = ""
+        var commandResult: String = EMPTY_MESSAGE
+
+        // Execute the chosen command based on user input.
         when (choice) {
             "1" -> {
-                //val sumCommand: Sum()
-                //commandResult = sumCommand.completehere
-                commandResult = "Sum" // Placeholder to keep the code functional before Guido integrates the Sum class.
+                // Instantiate and execute the SumCommand.
+                val sumCommand = SumCommand()
+                commandResult = sumCommand.execute()
             }
 
             "2" -> {
-                //val factorialCommand: Factorial = Factorial()
-                //commandResult = factorialCommand.completehere
-                commandResult =
-                    "Factorial" // Placeholder to keep the code functional before Guido integrates the Factorial class.
+                // Instantiate and execute the FactorialCommand.
+                val factorialCommand: FactorialCommand = FactorialCommand()
+                commandResult = factorialCommand.execute()
             }
 
             "3" -> {
-                val conversionCommand: ConversionService = ConversionService()
-                commandResult = conversionCommand.temperatureConversion()
+                // Instantiate and execute the ConversionCommand.
+                val conversionCommand: ConversionCommand = ConversionCommand()
+                commandResult = conversionCommand.execute()
             }
         }
-        println(commandResult)
-        endProgram = getUserInput("""Please choose from the following options:
-            |1. Main menu.
-            |2. End program.
-        """.trimMargin())
+        printResult(commandResult) // Display the result of the executed command.
+
+        // Prompt the user for continuing or ending the program.
+        printMessage("Please choose from the following options:",4,NEW_LINE)
+        printMessage("1. Main menu",4,NEW_LINE)
+        printMessage("2. End program",4,NEW_LINE)
+        endProgram = getUserInput(">",4) // Get user's choice for program continuation.
+
+
+        // Validation loop for program continuation choice.
         while (endProgram !in arrayOf("1", "2")) {
-            endProgram = getUserInput(("Please type 1 or 2: "))
+            endProgram = getUserInput("Please type 1 or 2:",4)
         }
     }
-    println("Thank you. Goodbye!")
+    // Program ends with a goodbye message when the user chooses "2".
+    printMessage("Thank you. Goodbye!",4)
     return
+}
+
+/**
+ * Prints the main menu options to the console.
+ * This function displays a list of available commands that the user can choose from.
+ */
+fun printMainMenu(){
+    println()
+    printMessage("Main Menu",4,NEW_LINE)
+    println()
+    printMessage("You are able to choose one of three commands:",4,NEW_LINE)
+    printMessage("1. Computing the sum of cubes of consecutive positive integers up to a provided value.",4,NEW_LINE)
+    printMessage("2. Computing the sum of the factorials of three given positive integers.",4,NEW_LINE)
+    printMessage("3. Converting a temperature from one unit to another: Celsius, Fahrenheit or Kelvin.",4,NEW_LINE)
+}
+
+/**
+ * Prints the result of an executed command to the console, followed by an empty line for better readability.
+ * @param result The `String` containing the message or output from the executed command.
+ */
+fun printResult(result:String){
+    printMessage(result,4,NEW_LINE)
+    println()
 }
