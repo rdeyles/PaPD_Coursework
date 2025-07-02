@@ -19,13 +19,16 @@ class ConversionCommand:Command {
      */
     fun conversionService(firstUnit: String, secondUnit: String, temperatureToConvert: Double): Double {
         var temperatureConverted: Double = 0.0
-        when (firstUnit) {
-            /*"Celsius" if secondUnit == "Fahrenheit" -> temperatureConverted = temperatureToConvert * 9 / 5 + 32
-            "Fahrenheit" if secondUnit == "Celsius" -> temperatureConverted = (temperatureToConvert - 32) * 5 / 9
-            "Celsius" if secondUnit == "Kelvin" -> temperatureConverted = temperatureToConvert + 273.15
-            "Kelvin" if secondUnit == "Celsius" -> temperatureConverted = temperatureToConvert - 273.15
-            "Fahrenheit" if secondUnit == "Kelvin" -> temperatureConverted = (temperatureToConvert - 32) * 5 / 9 + 273.15
-            "Kelvin" if secondUnit == "Fahrenheit" -> temperatureConverted = (temperatureToConvert - 273.15) * 9 / 5 + 32*/
+        temperatureConverted = when (Pair(firstUnit, secondUnit)) {
+            Pair("Celsius", "Fahrenheit") -> temperatureToConvert * 9 / 5 + 32
+            Pair("Fahrenheit", "Celsius") -> (temperatureToConvert - 32) * 5 / 9
+            Pair("Celsius", "Kelvin") -> temperatureToConvert + 273.15
+            Pair("Kelvin", "Celsius") -> temperatureToConvert - 273.15
+            Pair("Fahrenheit", "Kelvin") -> (temperatureToConvert - 32) * 5 / 9 + 273.15
+            Pair("Kelvin", "Fahrenheit") -> (temperatureToConvert - 273.15) * 9 / 5 + 32
+            else -> -999.9 /* Redundancy returning an arbitrary value below absolute zero in any units.
+            temperatureConversion() will not allow any value this low to be passed to conversionService().
+            Serving only to ensure the when statement is exhaustive. */
         }
         temperatureConverted = round(temperatureConverted * 100.0) / 100.0
         return temperatureConverted
