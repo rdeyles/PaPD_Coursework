@@ -13,7 +13,22 @@ import kotlin.String
  *
  * @return readln() user input, input validation will be handled by the command classes.
  */
-fun getUserInput(message: String): String {
-    println(message)
+
+fun getUserInput(message:String, tabulations:Int = 0, endLine:Char = ' '  ): String {
+    printMessage(message,tabulations,endLine)
     return readln()
+}
+
+/**
+ * The printMessage function displays a message on the console.
+ * The non-negative [tabs] parameter specifies the number
+ * of tabs used to indent the message; the default is zero tabs.
+ * There is also an optional end-of-line character parameter, which defaults to a whitespace.
+ * @param message the required parameter to prompt the intended response.
+ * @param tabs optional parameter which specifies the number of tabs used to indent the message, default is zero.
+ * @param endLine default is a single space character
+ *
+ */
+fun printMessage(message:String, tabs:Int = 0, endLine:Char = ' '  ){
+    print("${"\t".repeat(tabs)}${message}${endLine}")
 }
