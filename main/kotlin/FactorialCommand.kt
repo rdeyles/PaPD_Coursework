@@ -1,5 +1,6 @@
 import java.math.BigInteger
 
+
 /**
  * The FactorialCommand class is designed to calculate the sum of factorials
  * for a set of user-provided non-negative integers.
@@ -22,29 +23,35 @@ class FactorialCommand:Command {
      */
     override fun execute(): String {
         val args = ArrayList<Int>()
-        printMessage("Please input three non-negative integers to compute the sum of their factorials.",4,NEW_LINE)
+        printMessage("Please enter three non-negative integers to calculate the sum of their factorials. A valid range is [0,${Int.MAX_VALUE}]",4,NEW_LINE)
+        printMessage("Large numbers may take a significant amount of time depending on your machine.",4,NEW_LINE)
         var index = 0
-        repeat(3) {// Loop three times to get three numbers from the user.
+        while(args.size < 3){ // Loop three times to get three numbers from the user.
             var input = ""
             try {
 
-                input = getUserInput("Integer #${++index}: ", 4)
+                input = getUserInput("Integer #${index + 1}: ", 4)
+                if(isExitCommand(input)){
+                    return "Exiting the factorial calculation process."
+                }
                 val a = validate(input) // Validate the user's input.
                 args.add(a) // Add the validated integer to the list.
+                index += 1
             } catch (e: NumberFormatException) {
                 // Catches error if the input string cannot be converted to an integer.
-                return ("$input is not a valid natural number.")
+                printMessage("$input is not a valid natural number in the range [0,${Int.MAX_VALUE}].",4,NEW_LINE)
             } catch (e: IllegalArgumentException) {
                 // Catches error if the input integer is out of the specified range (0 to Int.MAX_VALUE).
-                return "$e.toString()"
+                printMessage("$input is not a valid natural number in the range [0,${Int.MAX_VALUE}].",4,NEW_LINE)
             }
         }
+
         // If all inputs are valid, calculate the sum of factorials and return the result.
         val sum = makeFactorial(args).toString()
         if(sum.length > 1024 ){
-            return "The sum of the factorials ${args.joinToString(separator = ", !", prefix = "!")} is a number with ${sum.length + 1} digits and these are the first 1024 digits: ${sum.substring(1024)}... "
+            return "The sum of the factorials ${args.joinToString(separator = ", !", prefix = "!")} is a number with ${sum.length} digits and these are the first 1024 digits: ${sum.substring(0,1024)}... "
         }
-        return "The sum of the factorials ${args.joinToString(separator = ",!", prefix = "!")} is a number with ${sum.length + 1} digits and is $sum "
+        return "The sum of the factorials ${args.joinToString(separator = ",!", prefix = "!")} is a number with ${sum.length} digits and is $sum "
     }
 
     /**
@@ -58,8 +65,13 @@ class FactorialCommand:Command {
     fun makeFactorial(args: List<Int>): BigInteger {
         var sum = BigInteger.ZERO // Initialize the sum to zero.
         for (arg in args) {
-            // For each integer in the list, compute its factorial and add to the result.
-            sum += computeFactorial(arg.toBigInteger())
+            //val time = measureTime {
+                //println("Computing factorial of $arg")
+                // For each integer in the list, compute its factorial and add to the result.
+                sum += computeFactorial(arg.toBigInteger())
+                //println("Finished computing factorial of $arg")
+            //}
+            //println("Time $time")
         }
         return sum
     }
@@ -76,10 +88,7 @@ class FactorialCommand:Command {
      */
     private fun validate(input: String): Int {
         val a = input.toInt() // Converts the input string to an integer. Throws NumberFormatException if invalid.
-        require(a >= 0 && a <= Int.MAX_VALUE) {
-            // Checks if the number is within the valid range. Throws IllegalArgumentException if not.
-            "The number must be between 0 and ${Int.MAX_VALUE} included."
-        }
+         require(a in 0 .. Int.MAX_VALUE) { "$input is not a valid natural number in the range [0,${Int.MAX_VALUE}]" }
         return a
     }
 
@@ -93,7 +102,7 @@ class FactorialCommand:Command {
      * - Returns `BigInteger.ONE` if `n` is 0 or 1.
      * - Returns the product of all positive integers up to `n` for `n > 1`.
      */
-    internal fun computeFactorial(n: BigInteger): BigInteger {
+    private fun computeFactorial(n: BigInteger): BigInteger {
         // Base cases for factorial calculation.
         if (n == BigInteger.ZERO || n == BigInteger.ONE) {
             return BigInteger.ONE

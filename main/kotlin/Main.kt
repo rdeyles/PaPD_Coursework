@@ -13,6 +13,11 @@ const val NEW_LINE = '\n'
 const val EMPTY_MESSAGE = ""
 
 /**
+ * Defines the exit options for the user to type.
+ */
+val EXIT_OPTIONS: Array<String> = arrayOf("exit", "end", "cancel", "stop") // Allow a few likely exit commands.
+
+/**
  * Main function to control which command function is called.
  *
  * User prompt to input a choice between Sum, Factorial or Conversion functions (1, 2 or 3).

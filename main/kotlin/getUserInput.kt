@@ -32,3 +32,13 @@ fun getUserInput(message:String, tabulations:Int = 0, endLine:Char = ' '  ): Str
 fun printMessage(message:String, tabs:Int = 0, endLine:Char = ' '  ){
     print("${"\t".repeat(tabs)}${message}${endLine}")
 }
+
+/**
+ * The isExitCommand function checks if the [input] parameter is an exit command typed by the user.
+ * The input string is trimmed and converted to lowercase.
+ * @param input the entered input
+ * @return Boolean true if input is defined
+ */
+fun isExitCommand(input:String):Boolean {
+    return input.trimMargin().lowercase() in EXIT_OPTIONS
+}
