@@ -19,13 +19,16 @@ class ConversionCommand:Command {
      */
     fun conversionService(firstUnit: String, secondUnit: String, temperatureToConvert: Double): Double {
         var temperatureConverted: Double = 0.0
-        when (firstUnit) {
-            /*"Celsius" if secondUnit == "Fahrenheit" -> temperatureConverted = temperatureToConvert * 9 / 5 + 32
-            "Fahrenheit" if secondUnit == "Celsius" -> temperatureConverted = (temperatureToConvert - 32) * 5 / 9
-            "Celsius" if secondUnit == "Kelvin" -> temperatureConverted = temperatureToConvert + 273.15
-            "Kelvin" if secondUnit == "Celsius" -> temperatureConverted = temperatureToConvert - 273.15
-            "Fahrenheit" if secondUnit == "Kelvin" -> temperatureConverted = (temperatureToConvert - 32) * 5 / 9 + 273.15
-            "Kelvin" if secondUnit == "Fahrenheit" -> temperatureConverted = (temperatureToConvert - 273.15) * 9 / 5 + 32*/
+        temperatureConverted = when (Pair(firstUnit, secondUnit)) {
+            Pair("Celsius", "Fahrenheit") -> temperatureToConvert * 9 / 5 + 32
+            Pair("Fahrenheit", "Celsius") -> (temperatureToConvert - 32) * 5 / 9
+            Pair("Celsius", "Kelvin") -> temperatureToConvert + 273.15
+            Pair("Kelvin", "Celsius") -> temperatureToConvert - 273.15
+            Pair("Fahrenheit", "Kelvin") -> (temperatureToConvert - 32) * 5 / 9 + 273.15
+            Pair("Kelvin", "Fahrenheit") -> (temperatureToConvert - 273.15) * 9 / 5 + 32
+            else -> -999.9 /* Redundancy returning an arbitrary value below absolute zero in any units.
+            temperatureConversion() will not allow any value this low to be passed to conversionService().
+            Serving only to ensure the when statement is exhaustive. */
         }
         temperatureConverted = round(temperatureConverted * 100.0) / 100.0
         return temperatureConverted
@@ -50,7 +53,6 @@ class ConversionCommand:Command {
      */
     override fun execute(): String {
         val units: Array<String> = arrayOf("1", "2", "3") // Listing choice of units as numbers for user-friendly inputs.
-        val exitOptions: Array<String> = arrayOf("Exit", "exit", "End", "end", "Cancel", "cancel", "Stop", "stop") // Allow a few likely exit commands.
         val unitsToPresent: Array<String> = arrayOf("Celsius", "Fahrenheit", "Kelvin") // Listing units as words for messages to user and passing to conversionService().
         println("""You are able to convert between the following units:
         |1. Celsius
@@ -71,7 +73,7 @@ class ConversionCommand:Command {
         while (confirm !in arrayOf("Y", "y")) {
             firstUnit = getUserInput("Please enter the number of which unit you wish to convert from: ")
             while (firstUnit !in units) {
-                if (firstUnit in exitOptions) {
+                if (isExitCommand(firstUnit)) {
                     return "Exiting the temperature conversion process."
                 }
                 else {
@@ -81,7 +83,7 @@ class ConversionCommand:Command {
             secondUnit = getUserInput("Please enter the number of which unit you wish to convert to: ")
             while (secondUnit !in units || secondUnit == firstUnit) {
                 if (secondUnit !in units) {
-                    if (secondUnit in exitOptions) {
+                    if (isExitCommand(secondUnit)) {
                         return "Exiting the temperature conversion process."
                     }
                     else {
@@ -95,7 +97,7 @@ class ConversionCommand:Command {
             println("You have selected to convert ${unitsToPresent[firstUnit.toInt() - 1]} to ${unitsToPresent[secondUnit.toInt() - 1]}.") // Convert user inputs to int for accessing worded temp unit elements.
             confirm = getUserInput("Please confirm if this is correct (Y/N): ")
             while (confirm !in arrayOf("Y", "y", "N", "n")) { // Avoiding any inputs other than Y or N
-                if (confirm in exitOptions) {
+                if (isExitCommand(confirm)) {
                     return "Exiting the temperature conversion process."
                 }
                 else {
@@ -107,7 +109,7 @@ class ConversionCommand:Command {
         when (firstUnit) { // Validating input can be converted to Double and is above absolute zero (coldest possible temp).
             "1" -> {
                 while (temperatureInput.toDoubleOrNull() == null || temperatureInput.toDouble() < -273.15) {
-                    if (temperatureInput in exitOptions) {
+                    if (isExitCommand(temperatureInput)) {
                         return "Exiting the temperature conversion process."
                     }
                     else {
@@ -117,7 +119,7 @@ class ConversionCommand:Command {
             }
             "2" -> {
                 while (temperatureInput.toDoubleOrNull() == null || temperatureInput.toDouble() < -459.67) {
-                    if (temperatureInput in exitOptions) {
+                    if (isExitCommand(temperatureInput)) {
                         return "Exiting the temperature conversion process."
                     }
                     else {
@@ -127,7 +129,7 @@ class ConversionCommand:Command {
             }
             "3" -> {
                 while (temperatureInput.toDoubleOrNull() == null || temperatureInput.toDouble() < 0) {
-                    if (temperatureInput in exitOptions) {
+                    if (isExitCommand(temperatureInput)) {
                         return "Exiting the temperature conversion process."
                     }
                     else {

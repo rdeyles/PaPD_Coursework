@@ -24,6 +24,9 @@ class SumCommand:Command {
         while (result.isEmpty()){
             try {
                 input = getUserInput("Please enter a positive natural number between [1,92681]:",4)
+                if(isExitCommand(input)){
+                    return "Exiting the sum of cubes calculation process."
+                }
                 // Convert the input string to an Int
                 // Validate that the number is within the acceptable range [1, 92681].
                 // If not, it throws an IllegalArgumentException.
@@ -69,7 +72,7 @@ class SumCommand:Command {
      * @param n The positive natural number (as an Int) up to which the sum of cubes is to be calculated.
      * @return A `ULong` representing the sum of the cubes of the first 'n' natural numbers.
      */
-    private fun makeSum(n: Int): ULong {
+    fun makeSum(n: Int): ULong {
         // Calculate the sum of the first 'n' natural numbers: (n * (n + 1)) / 2.
         // This intermediate result is called a triangular number.
         val tmp: ULong = ((n.toULong() + 1u) * n.toULong()) / 2u

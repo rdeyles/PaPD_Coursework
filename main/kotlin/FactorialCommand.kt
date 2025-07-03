@@ -1,5 +1,5 @@
 import java.math.BigInteger
-import kotlin.time.measureTime
+
 
 /**
  * The FactorialCommand class is designed to calculate the sum of factorials
@@ -31,6 +31,9 @@ class FactorialCommand:Command {
             try {
 
                 input = getUserInput("Integer #${index + 1}: ", 4)
+                if(isExitCommand(input)){
+                    return "Exiting the factorial calculation process."
+                }
                 val a = validate(input) // Validate the user's input.
                 args.add(a) // Add the validated integer to the list.
                 index += 1
@@ -99,7 +102,7 @@ class FactorialCommand:Command {
      * - Returns `BigInteger.ONE` if `n` is 0 or 1.
      * - Returns the product of all positive integers up to `n` for `n > 1`.
      */
-    internal fun computeFactorial(n: BigInteger): BigInteger {
+    private fun computeFactorial(n: BigInteger): BigInteger {
         // Base cases for factorial calculation.
         if (n == BigInteger.ZERO || n == BigInteger.ONE) {
             return BigInteger.ONE
