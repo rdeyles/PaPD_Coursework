@@ -32,7 +32,7 @@ class SumCommand:Command {
                 // If not, it throws an IllegalArgumentException.
                 val n = validate(input)
                 // If validation passes, calculate the sum of cubes and return it as a string.
-                result = "The sum of the cubes of natural numbers up to $n is ${makeSum(n).toString()}"
+                result = "The sum of the cubes of natural numbers up to $n cubed is ${makeSum(n).toString()}"
             }catch(e:NumberFormatException){
                 // Catches error if the input string cannot be converted to a ULong.
                 printMessage("$input is not a valid natural number.",4,NEW_LINE)
