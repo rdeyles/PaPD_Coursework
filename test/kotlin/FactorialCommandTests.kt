@@ -2,7 +2,7 @@ import java.math.BigInteger
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
-class FactorialCommandTest {
+class FactorialCommandTests {
 
     @Test
     fun makeFactorial() {

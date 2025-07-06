@@ -21,7 +21,7 @@ class ConversionCommand:Command {
      * @param tempToConvert -- temperature to convert from as Double type.
      * @return temperatureConverted -- converted temperature rounded to 2 decimal places.
      */
-    fun conversionService(unitChoice: String, tempToConvert: Double): Double {
+    fun convertTemp(unitChoice: String, tempToConvert: Double): Double {
         var temperatureConverted: Double = 0.0
         temperatureConverted = when (unitChoice) {
             "1" -> tempToConvert * 9 / 5 + 32 // Celsius to Fahrenheit.
@@ -56,6 +56,7 @@ class ConversionCommand:Command {
      * @return String -- either "Exiting the temperature process" when user decides to terminate the process early, or outlining the results of the conversion with the return value of conversionService().
      */
     override fun execute(): String {
+        // ConversionCommand main menu.
         printMessage("Please choose one of the following:",4,NEW_LINE)
         printMessage("1. Celsius to Fahrenheit",4,NEW_LINE)
         printMessage("2. Celsius to Kelvin",4,NEW_LINE)
@@ -65,15 +66,15 @@ class ConversionCommand:Command {
         printMessage("6. Kelvin to Fahrenheit",4,NEW_LINE)
         printMessage("7. Exit",4,NEW_LINE)
         var unitChoice: String = getUserInput("Enter the option number:")
-        val maxChoice: Int = 7
-        while(!validateUnit(unitChoice, maxChoice)) {
+        val maxChoice: Int = 7 // Notes the current maximum number of options.
+        while(!validateUnit(unitChoice, maxChoice)) { // Unit choice must be written as an integer, below the max number of choices.
             unitChoice = getUserInput("Invalid input, enter a number from the options.")
         }
-        if (unitChoice.toInt() == maxChoice) {
+        if (unitChoice.toInt() == maxChoice) { // Exits the command early.
             return "Exiting the temperature conversion process."
         }
         var tempChoice: String = getUserInput("Enter the value you wish to convert:")
-        if (isExitCommand(tempChoice)) {
+        if (isExitCommand(tempChoice)) { // Exits the command early.
             return "Exiting the temperature conversion process."
         }
         val minTemp: Double = when (unitChoice) { // Sets the minimum temperature at absolute zero.
@@ -82,12 +83,12 @@ class ConversionCommand:Command {
             "5", "6" -> 0.0 // Kelvin.
             else -> 0.0 // Redundancy, set to the highest value of absolute zero.
         }
-        while (!validateTemp(tempChoice, minTemp)) {
+        while (!validateTemp(tempChoice, minTemp)) { // Temperature choice must be above maximum zero based on the first unit in the chosen conversion.
             tempChoice = getUserInput("Invalid input, enter a number larger than ${minTemp}:")
         }
-        val tempToConvert: Double = tempChoice.toDouble()
-        val tempResult: Double = conversionService(unitChoice, tempToConvert)
-        return (resultToString(unitChoice, tempToConvert, tempResult))
+        val tempToConvert: Double = tempChoice.toDouble() // Convert tempChoice to double for computation in convertTemp()
+        val tempResult: Double = convertTemp(unitChoice, tempToConvert) // Call convertTemp() to compute conversion.
+        return (resultToString(unitChoice, tempToConvert, tempResult)) // Return the computation result as a string message.
     }
 
     /**

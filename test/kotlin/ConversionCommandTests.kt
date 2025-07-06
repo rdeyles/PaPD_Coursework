@@ -5,37 +5,37 @@ class ConversionCommandTests {
     @Test
     fun testCelsiusToFahrenheit() { // Testing 145 Celsius to Fahrenheit, expect 293
         val conversionCtF: ConversionCommand = ConversionCommand()
-        assertEquals(293.0, conversionCtF.conversionService("1", 145.0))
+        assertEquals(293.0, conversionCtF.convertTemp("1", 145.0))
     }
 
     @Test
     fun testCelsiusToKelvin() { // Testing 145 Celsius to Kelvin, expect 418.15
         val conversionCtK: ConversionCommand = ConversionCommand()
-        assertEquals(418.15, conversionCtK.conversionService("2", 145.0))
+        assertEquals(418.15, conversionCtK.convertTemp("2", 145.0))
     }
 
     @Test
     fun testFahrenheitToCelsius() { // Testing 145 Fahrenheit to Celsius, expect 62.78
         val conversionFtC: ConversionCommand = ConversionCommand()
-        assertEquals(62.78, conversionFtC. conversionService("3", 145.0))
+        assertEquals(62.78, conversionFtC. convertTemp("3", 145.0))
     }
 
     @Test
     fun testFahrenheitToKelvin() { // Testing 145 Fahrenheit to Kelvin, expect 335.93
         val conversionFtK: ConversionCommand = ConversionCommand()
-        assertEquals(335.93, conversionFtK.conversionService("4", 145.0))
+        assertEquals(335.93, conversionFtK.convertTemp("4", 145.0))
     }
 
     @Test
     fun testKelvinToCelsius() { // Testing 145 Kelvin to Celsius, expect -128.15
         val conversionKtC: ConversionCommand = ConversionCommand()
-        assertEquals(-128.15, conversionKtC.conversionService("5", 145.0))
+        assertEquals(-128.15, conversionKtC.convertTemp("5", 145.0))
     }
 
     @Test
     fun testKelvinToFahrenheit() { // Testing 145 Kelvin to Fahrenheit, expect -198.67
         val conversionKtF: ConversionCommand = ConversionCommand()
-        assertEquals(-198.67, conversionKtF.conversionService("6", 145.0))
+        assertEquals(-198.67, conversionKtF.convertTemp("6", 145.0))
     }
 
     @Test
@@ -97,4 +97,5 @@ class ConversionCommandTests {
         val testResultToString: ConversionCommand = ConversionCommand()
         assertEquals("123.0 degrees Celsius is 253.4 degrees Fahrenheit", testResultToString.resultToString("1", 123.0, 253.4))
     }
+
 }
