@@ -48,10 +48,10 @@ class FactorialCommand:Command {
 
         // If all inputs are valid, calculate the sum of factorials and return the result.
         val sum = makeFactorial(args).toString()
-        if(sum.length > 1024 ){
-            return "The sum of the factorials ${args.joinToString(separator = ", !", prefix = "!")} is a number with ${sum.length} digits and these are the first 1024 digits: ${sum.substring(0,1024)}... "
+        if(sum.length > 1024){
+            return "The sum of the factorials ${args.joinToString(separator = "!, ", postfix = "!")} is a number with ${sum.length} digits and these are the first 1024 digits: ${sum.substring(0,1024)}..."
         }
-        return "The sum of the factorials ${args.joinToString(separator = ",!", prefix = "!")} is a number with ${sum.length} digits and is $sum "
+        return "The sum of the factorials ${args.joinToString(separator = "!, ", postfix = "!")} is a number with ${sum.length} digits and is $sum"
     }
 
     /**
