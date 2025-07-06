@@ -1,33 +1,37 @@
 import kotlin.math.round
 
+/**
+ * The ConversionCommand class is designed to convert between two units of temperature.
+ *
+ * It interacts with the user to obtain input, validates it,
+ * converting between the units and provided temperature value,
+ * returning a formatted string result or an exit message.
+ */
 class ConversionCommand:Command {
     /**
      * Converts between units of temperature, chosen from Celsius, Fahrenheit and Kelvin.
      *
-     * Separation of concerns: input validation handled by temperatureConversion() -- no values below absolute zero should be passed as arguments.
-     *
      * ## Examples:
      *
-     * conversionService("Kelvin", "Celsius", 256.0) = -17.15
+     * conversionService("5", 256.0) = -17.15
      *
-     * conversionService("Fahrenheit", "Celsius", -143.2) = -97.33
+     * conversionService("3", -143.2) = -97.33
      *
-     * @param firstUnit -- temperature unit to convert from.
-     * @param secondUnit -- temperature unit to convert to.
-     * @param temperatureToConvert -- temperature value to convert from.
+     * @param unitChoice -- chosen units to convert.
+     * @param tempToConvert -- temperature to convert from as Double type.
      * @return temperatureConverted -- converted temperature rounded to 2 decimal places.
      */
-    fun conversionService(firstUnit: String, secondUnit: String, temperatureToConvert: Double): Double {
+    fun conversionService(unitChoice: String, tempToConvert: Double): Double {
         var temperatureConverted: Double = 0.0
-        temperatureConverted = when (Pair(firstUnit, secondUnit)) {
-            Pair("Celsius", "Fahrenheit") -> temperatureToConvert * 9 / 5 + 32
-            Pair("Fahrenheit", "Celsius") -> (temperatureToConvert - 32) * 5 / 9
-            Pair("Celsius", "Kelvin") -> temperatureToConvert + 273.15
-            Pair("Kelvin", "Celsius") -> temperatureToConvert - 273.15
-            Pair("Fahrenheit", "Kelvin") -> (temperatureToConvert - 32) * 5 / 9 + 273.15
-            Pair("Kelvin", "Fahrenheit") -> (temperatureToConvert - 273.15) * 9 / 5 + 32
+        temperatureConverted = when (unitChoice) {
+            "1" -> tempToConvert * 9 / 5 + 32 // Celsius to Fahrenheit.
+            "2" -> tempToConvert + 273.15 // Celsius to Kelvin.
+            "3" -> (tempToConvert - 32) * 5 / 9 // Fahrenheit to Celsius
+            "4" -> (tempToConvert - 32) * 5 / 9 + 273.15 // Fahrenheit to Kelvin.
+            "5" -> tempToConvert - 273.15 // Kelvin to Celsius.
+            "6" -> (tempToConvert - 273.15) * 9 / 5 + 32 // Kelvin to Fahrenheit.
             else -> -999.9 /* Redundancy returning an arbitrary value below absolute zero in any units.
-            temperatureConversion() will not allow any value this low to be passed to conversionService().
+            validation will not allow any value this low to be passed to conversionService().
             Serving only to ensure the when statement is exhaustive. */
         }
         temperatureConverted = round(temperatureConverted * 100.0) / 100.0
@@ -52,95 +56,127 @@ class ConversionCommand:Command {
      * @return String -- either "Exiting the temperature process" when user decides to terminate the process early, or outlining the results of the conversion with the return value of conversionService().
      */
     override fun execute(): String {
-        val units: Array<String> = arrayOf("1", "2", "3") // Listing choice of units as numbers for user-friendly inputs.
-        val unitsToPresent: Array<String> = arrayOf("Celsius", "Fahrenheit", "Kelvin") // Listing units as words for messages to user and passing to conversionService().
-        println("""You are able to convert between the following units:
-        |1. Celsius
-        |2. Fahrenheit
-        |3. Kelvin
-        |
-        |At any time, type exit to end the temperature conversion process early.
-    """.trimMargin())
-        var confirm: String = ""
-        var firstUnit: String = ""
-        var secondUnit: String = ""
+        printMessage("Please choose one of the following:",4,NEW_LINE)
+        printMessage("1. Celsius to Fahrenheit",4,NEW_LINE)
+        printMessage("2. Celsius to Kelvin",4,NEW_LINE)
+        printMessage("3. Fahrenheit to Celsius",4,NEW_LINE)
+        printMessage("4. Fahrenheit to Kelvin",4,NEW_LINE)
+        printMessage("5. Kelvin to Celsius",4,NEW_LINE)
+        printMessage("6. Kelvin to Fahrenheit",4,NEW_LINE)
+        printMessage("7. Exit",4,NEW_LINE)
+        var unitChoice: String = getUserInput("Enter the option number:")
+        val maxChoice: Int = 7
+        while(!validateUnit(unitChoice, maxChoice)) {
+            unitChoice = getUserInput("Invalid input, enter a number from the options.")
+        }
+        if (unitChoice.toInt() == maxChoice) {
+            return "Exiting the temperature conversion process."
+        }
+        var tempChoice: String = getUserInput("Enter the value you wish to convert:")
+        if (isExitCommand(tempChoice)) {
+            return "Exiting the temperature conversion process."
+        }
+        val minTemp: Double = when (unitChoice) { // Sets the minimum temperature at absolute zero.
+            "1", "2" -> -273.15 // Celsius.
+            "3", "4" -> -459.67 // Fahrenheit.
+            "5", "6" -> 0.0 // Kelvin.
+            else -> 0.0 // Redundancy, set to the highest value of absolute zero.
+        }
+        while (!validateTemp(tempChoice, minTemp)) {
+            tempChoice = getUserInput("Invalid input, enter a number larger than ${minTemp}:")
+        }
+        val tempToConvert: Double = tempChoice.toDouble()
+        val tempResult: Double = conversionService(unitChoice, tempToConvert)
+        return (resultToString(unitChoice, tempToConvert, tempResult))
+    }
 
-        /* Validation to ensure units chosen are from the options in the array.
-        Loop ends when user confirms they are happy with the chosen units.
-        Exit function if user inputs "Exit" or "exit" at any stage.
-        Must be the full word to avoid accidental exits.
-         */
-        while (confirm !in arrayOf("Y", "y")) {
-            firstUnit = getUserInput("Please enter the number of which unit you wish to convert from: ")
-            while (firstUnit !in units) {
-                if (isExitCommand(firstUnit)) {
-                    return "Exiting the temperature conversion process."
-                }
-                else {
-                    firstUnit = getUserInput("That is not one of the choices, please type 1, 2, 3: ")
-                }
-            }
-            secondUnit = getUserInput("Please enter the number of which unit you wish to convert to: ")
-            while (secondUnit !in units || secondUnit == firstUnit) {
-                if (secondUnit !in units) {
-                    if (isExitCommand(secondUnit)) {
-                        return "Exiting the temperature conversion process."
-                    }
-                    else {
-                        secondUnit = getUserInput("That is not one of the choices, please type either 1, 2, 3: ")
-                    }
-                }
-                else if (secondUnit == firstUnit) {
-                    secondUnit = getUserInput("You already picked this unit to convert from. Pick another option: ") // User can't choose the same units twice. It would be meaningless.
-                }
-            }
-            println("You have selected to convert ${unitsToPresent[firstUnit.toInt() - 1]} to ${unitsToPresent[secondUnit.toInt() - 1]}.") // Convert user inputs to int for accessing worded temp unit elements.
-            confirm = getUserInput("Please confirm if this is correct (Y/N): ")
-            while (confirm !in arrayOf("Y", "y", "N", "n")) { // Avoiding any inputs other than Y or N
-                if (isExitCommand(confirm)) {
-                    return "Exiting the temperature conversion process."
-                }
-                else {
-                    confirm = getUserInput("Please enter Y for yes, N for no, or Exit: ")
-                }
-            }
+    /**
+     * Validates the unit choice to ensure it matches one of the options in the menu.
+     *
+     * Converts unit input to an int or null. If outside the range of options or not int, automatically returns false.
+     *
+     * ## Examples:
+     *
+     * validate("7", 7) = true
+     *
+     * validate("banana", 7) = false
+     *
+     * validate("8", 7) = false
+     *
+     * @param unitChoice -- chosen option from the ConversionCommand menu to validate.
+     *
+     * @param maxChoice -- maximum number fo choices available.
+     *
+     * @return Boolean -- true if the unit input matches any of the available choices in the ConversionCommand menu.
+     */
+    fun validateUnit(unitChoice: String, maxChoice: Int): Boolean {
+         return when {
+             unitChoice.toIntOrNull() == null -> false // Input cannot be converted to Int
+             unitChoice.toInt() < 1 -> false // Input is below the lowest option of 1
+             unitChoice.toInt() > maxChoice -> false // Input is beyond the range of available options
+             else -> true // Input is valid
+         }
+    }
+
+    /**
+     * Validates the temperature input value.
+     *
+     * Ensures the value is a valid number above absolute zero in the chosen temperature.
+     *
+     * ## Examples:
+     *
+     * validateTemp("banana", -273.15) = false
+     *
+     * validateTemp("-555", -273.15) = false
+     *
+     * validateTemp("456", -273.15) = true
+     *
+     * @param tempInput -- temperature value to convert
+     *
+     * @param minTemp -- the minimum temperature (absolute zero)
+     *
+     * @return Boolean -- true if the temperature input is possible to convert to Double type and above absolute zero.
+     */
+    fun validateTemp(tempInput: String, minTemp: Double): Boolean {
+        return when {
+            tempInput.toDoubleOrNull() == null -> false // Input cannot be converted to Double
+            tempInput.toDouble() < minTemp -> false // Input is below absolute zero
+            else -> true // Input is valid
         }
-        var temperatureInput: String = getUserInput("Please enter the temperature to convert: ")
-        when (firstUnit) { // Validating input can be converted to Double and is above absolute zero (coldest possible temp).
-            "1" -> {
-                while (temperatureInput.toDoubleOrNull() == null || temperatureInput.toDouble() < -273.15) {
-                    if (isExitCommand(temperatureInput)) {
-                        return "Exiting the temperature conversion process."
-                    }
-                    else {
-                        temperatureInput = getUserInput("Please enter a number, ensure the value is above -273.15 degrees Celsius: ")
-                    }
-                }
-            }
-            "2" -> {
-                while (temperatureInput.toDoubleOrNull() == null || temperatureInput.toDouble() < -459.67) {
-                    if (isExitCommand(temperatureInput)) {
-                        return "Exiting the temperature conversion process."
-                    }
-                    else {
-                        temperatureInput = getUserInput("Please enter a number, ensure the value is above -459.67 degrees Fahrenheit: ")
-                    }
-                }
-            }
-            "3" -> {
-                while (temperatureInput.toDoubleOrNull() == null || temperatureInput.toDouble() < 0) {
-                    if (isExitCommand(temperatureInput)) {
-                        return "Exiting the temperature conversion process."
-                    }
-                    else {
-                        temperatureInput = getUserInput("Please enter a number, ensure the number is above 0 degrees Kelvin: ")
-                    }
-                }
-            }
+    }
+
+    /**
+     * Prepares the units into string variables to be entered into a string separately.
+     *
+     * Uses the ConversionCommand menu choices as a reference (e.g., "1" indicates Celsius to Fahrenheit)
+     *
+     * Creates a message to return the result of the temperature conversion.
+     *
+     * ## Examples:
+     *
+     * resultToString("1", 123.0, 253.4) = "123.0 degrees Celsius is 253.4 degrees Fahrenheit"
+     *
+     * @param unitChoice -- chosen option from the ConversionCommand menu to split into the two units.
+     *
+     * @param tempToConvert -- temperature value to convert
+     *
+     * @param tempResult -- result value of temperature conversion
+     *
+     * @return String -- message highlighting the results of the temperature conversion
+     */
+    fun resultToString(unitChoice: String, tempToConvert: Double, tempResult: Double): String {
+        val firstUnit: String = when (unitChoice) { // Set the first unit for the output message.
+            "1", "2" -> "Celsius"
+            "3", "4" -> "Fahrenheit"
+            "5", "6" -> "Kelvin"
+            else -> EMPTY_MESSAGE
         }
-        val temperatureToConvert: Double = temperatureInput.toDouble()
-        firstUnit = unitsToPresent[firstUnit.toInt() - 1]
-        secondUnit = unitsToPresent[secondUnit.toInt() - 1]
-        return ("$temperatureToConvert degrees $firstUnit = ${conversionService(firstUnit, secondUnit, temperatureToConvert)} degrees $secondUnit.")
+        val secondUnit: String = when (unitChoice) { // Set the second unit for the output message.
+            "3", "5" -> "Celsius"
+            "1", "6" -> "Fahrenheit"
+            "2", "4" -> "Kelvin"
+            else -> EMPTY_MESSAGE
+        }
+        return "$tempToConvert degrees $firstUnit is $tempResult degrees $secondUnit"
     }
 }

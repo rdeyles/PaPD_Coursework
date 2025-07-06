@@ -15,7 +15,7 @@ const val EMPTY_MESSAGE = ""
 /**
  * Defines the exit options for the user to type.
  */
-val EXIT_OPTIONS: Array<String> = arrayOf("exit", "end", "cancel", "stop") // Allow a few likely exit commands.
+val EXIT_OPTIONS: Set<String> = setOf("exit", "end", "cancel", "stop", "quit") // Allow a few likely exit commands.
 
 /**
  * Main function to control which command function is called.
@@ -43,7 +43,7 @@ fun main(): Unit {
     // Welcome message printed at the start of the program.
     printMessage("Welcome!", 4, NEW_LINE)
     var endProgram: String = "1" // Controls the main program loop. "1" means continue, "2" means end.
-
+    val endOptions: Set<String> = setOf("1", "2")
     // Main program loop: continues as long as the user wants to return to the main menu.
     while (endProgram == "1") {
         printMainMenu() // Display the main menu options to the user.
@@ -52,10 +52,10 @@ fun main(): Unit {
         var choice:String = getUserInput("Please select the command you want to run by typing the number:",4)
 
         // Validation to ensure only a number from the options is chosen.
-        val choices: Array<String> = arrayOf("1", "2", "3") // Numbers to minimise input requirements.
+        val choices: Set<String> = setOf("1", "2", "3") // Numbers to minimise input requirements.
         while (choice !in choices) {
             choice = getUserInput(
-                "Oh, it doesn't look like that was correct. Please type either 1, 2 or 3:",4
+                "Please type either 1, 2 or 3:",4
             )
         }
         var commandResult: String = EMPTY_MESSAGE
@@ -90,7 +90,7 @@ fun main(): Unit {
 
 
         // Validation loop for program continuation choice.
-        while (endProgram !in arrayOf("1", "2")) {
+        while (endProgram !in endOptions) {
             endProgram = getUserInput("Please type 1 or 2:",4)
         }
     }
