@@ -1,5 +1,3 @@
-
-
 /**
  * Defines a constant character for a new line.
  * This is used to ensure consistent new line formatting across different output messages.
