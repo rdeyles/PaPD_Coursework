@@ -16,6 +16,72 @@ const val EMPTY_MESSAGE = ""
 val EXIT_OPTIONS: Set<String> = setOf("exit", "end", "cancel", "stop", "quit") // Allow a few likely exit commands.
 
 /**
+ * Reusable function to display a message to the user to prompt an input.
+ *
+ * ## Examples:
+ *
+ * getUserInput("Type the number 3 here. ") expects "3".
+ *
+ * getUserInput("Type the number 3 here. ") could return "Hello".
+ *
+ * @param message clear and concise to prompt the intended response.
+ *
+ * @return readln() user input, input validation will be handled by the command classes.
+ */
+
+fun getUserInput(message:String, tabulations:Int = 0, endLine:Char = ' '  ): String {
+    printMessage(message,tabulations,endLine)
+    return readln()
+}
+
+/**
+ * The printMessage function displays a message on the console.
+ * The non-negative [tabs] parameter specifies the number
+ * of tabs used to indent the message; the default is zero tabs.
+ * There is also an optional end-of-line character parameter, which defaults to a whitespace.
+ * @param message the required parameter to prompt the intended response.
+ * @param tabs optional parameter which specifies the number of tabs used to indent the message, default is zero.
+ * @param endLine default is a single space character
+ *
+ */
+fun printMessage(message:String, tabs:Int = 0, endLine:Char = ' '  ){
+    print("${"\t".repeat(tabs)}${message}${endLine}")
+}
+
+/**
+ * The isExitCommand function checks if the [input] parameter is an exit command typed by the user.
+ * The input string is trimmed and converted to lowercase.
+ * @param input the entered input
+ * @return Boolean true if input is defined
+ */
+fun isExitCommand(input:String):Boolean {
+    return input.trimMargin().lowercase() in EXIT_OPTIONS
+}
+
+/**
+ * Prints the main menu options to the console.
+ * This function displays a list of available commands that the user can choose from.
+ */
+fun printMainMenu(){
+    println()
+    printMessage("Main Menu",4,NEW_LINE)
+    println()
+    printMessage("You are able to choose one of three commands:",4,NEW_LINE)
+    printMessage("1. Computing the sum of cubes of consecutive positive integers up to a provided value.",4,NEW_LINE)
+    printMessage("2. Computing the sum of the factorials of three given positive integers.",4,NEW_LINE)
+    printMessage("3. Converting a temperature from one unit to another: Celsius, Fahrenheit or Kelvin.",4,NEW_LINE)
+}
+
+/**
+ * Prints the result of an executed command to the console, followed by an empty line for better readability.
+ * @param result The `String` containing the message or output from the executed command.
+ */
+fun printResult(result:String){
+    printMessage(result,4,NEW_LINE)
+    println()
+}
+
+/**
  * Main function to control which command function is called.
  *
  * User prompt to input a choice between Sum, Factorial or Conversion functions (1, 2 or 3).
@@ -97,25 +163,3 @@ fun main(): Unit {
     return
 }
 
-/**
- * Prints the main menu options to the console.
- * This function displays a list of available commands that the user can choose from.
- */
-fun printMainMenu(){
-    println()
-    printMessage("Main Menu",4,NEW_LINE)
-    println()
-    printMessage("You are able to choose one of three commands:",4,NEW_LINE)
-    printMessage("1. Computing the sum of cubes of consecutive positive integers up to a provided value.",4,NEW_LINE)
-    printMessage("2. Computing the sum of the factorials of three given positive integers.",4,NEW_LINE)
-    printMessage("3. Converting a temperature from one unit to another: Celsius, Fahrenheit or Kelvin.",4,NEW_LINE)
-}
-
-/**
- * Prints the result of an executed command to the console, followed by an empty line for better readability.
- * @param result The `String` containing the message or output from the executed command.
- */
-fun printResult(result:String){
-    printMessage(result,4,NEW_LINE)
-    println()
-}
