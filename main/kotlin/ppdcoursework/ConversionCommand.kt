@@ -1,7 +1,9 @@
+package ppdcoursework
+
 import kotlin.math.round
 
 /**
- * The ConversionCommand class is designed to convert between two units of temperature.
+ * The ppdcoursework.ConversionCommand class is designed to convert between two units of temperature.
  *
  * It interacts with the user to obtain input, validates it,
  * converting between the units and provided temperature value,
@@ -56,7 +58,7 @@ class ConversionCommand:Command {
      * @return String -- either "Exiting the temperature process" when user decides to terminate the process early, or outlining the results of the conversion with the return value of conversionService().
      */
     override fun execute(): String {
-        // ConversionCommand main menu.
+        // ppdcoursework.ConversionCommand ppdcoursework.main menu.
         printMessage("Please choose one of the following:",4,NEW_LINE)
         printMessage("1. Celsius to Fahrenheit",4,NEW_LINE)
         printMessage("2. Celsius to Kelvin",4,NEW_LINE)
@@ -104,11 +106,11 @@ class ConversionCommand:Command {
      *
      * validate("8", 7) = false
      *
-     * @param unitChoice -- chosen option from the ConversionCommand menu to validate.
+     * @param unitChoice -- chosen option from the ppdcoursework.ConversionCommand menu to validate.
      *
      * @param maxChoice -- maximum number fo choices available.
      *
-     * @return Boolean -- true if the unit input matches any of the available choices in the ConversionCommand menu.
+     * @return Boolean -- true if the unit input matches any of the available choices in the ppdcoursework.ConversionCommand menu.
      */
     fun validateUnit(unitChoice: String, maxChoice: Int): Boolean {
          return when {
@@ -149,7 +151,7 @@ class ConversionCommand:Command {
     /**
      * Prepares the units into string variables to be entered into a string separately.
      *
-     * Uses the ConversionCommand menu choices as a reference (e.g., "1" indicates Celsius to Fahrenheit)
+     * Uses the ppdcoursework.ConversionCommand menu choices as a reference (e.g., "1" indicates Celsius to Fahrenheit)
      *
      * Creates a message to return the result of the temperature conversion.
      *
@@ -157,7 +159,7 @@ class ConversionCommand:Command {
      *
      * resultToString("1", 123.0, 253.4) = "123.0 degrees Celsius is 253.4 degrees Fahrenheit"
      *
-     * @param unitChoice -- chosen option from the ConversionCommand menu to split into the two units.
+     * @param unitChoice -- chosen option from the ppdcoursework.ConversionCommand menu to split into the two units.
      *
      * @param tempToConvert -- temperature value to convert
      *

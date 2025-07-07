@@ -1,3 +1,4 @@
+import ppdcoursework.ConversionCommand
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -46,7 +47,8 @@ class ConversionCommandTests {
 
     @Test
     fun testValidateUnitTooSmall() {
-        val unitValidate: ConversionCommand = ConversionCommand() // Testing validation of unit conversion chosen below the range of options available
+        val unitValidate: ConversionCommand =
+            ConversionCommand() // Testing validation of unit conversion chosen below the range of options available
         assertEquals(false, unitValidate.validateUnit("0", 7))
     }
 

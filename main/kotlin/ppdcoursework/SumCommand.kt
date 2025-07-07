@@ -1,5 +1,7 @@
+package ppdcoursework
+
 /**
- * The SumCommand class is designed to calculate the sum of cubes of the first 'n' natural numbers,
+ * The ppdcoursework.SumCommand class is designed to calculate the sum of cubes of the first 'n' natural numbers,
  *  where 'n' is a positive natural number provided by the user.
  *  It handles user input,
  *  validates the input within a specified range, and returns the calculated sum as a string,
@@ -8,7 +10,7 @@
 class SumCommand:Command {
 
     /**
-     * Executes the main logic of the SumCommand class.
+     * Executes the ppdcoursework.main logic of the ppdcoursework.SumCommand class.
      * This function prompts the user to enter a positive natural number, validates the input,
      * calculates the sum of the cubes of natural numbers up to the entered number,
      * and returns the result as a string. It includes robust error handling for invalid input.

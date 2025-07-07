@@ -1,8 +1,10 @@
+package ppdcoursework
+
 import java.math.BigInteger
 
 
 /**
- * The FactorialCommand class is designed to calculate the sum of factorials
+ * The ppdcoursework.FactorialCommand class is designed to calculate the sum of factorials
  * for a set of user-provided non-negative integers.
  * It interacts with the user to obtain input, validates it,
  * computes the factorials using `BigInteger` for large numbers, and then sums them up,
@@ -11,7 +13,7 @@ import java.math.BigInteger
 class FactorialCommand:Command {
 
     /**
-     * Executes the main logic of the `FactorialCommand`.
+     * Executes the ppdcoursework.main logic of the `ppdcoursework.FactorialCommand`.
      * This function prompts the user to enter three non-negative integers, validates each input,
      * calculates the sum of their factorials, and returns a formatted string with the result.
      * It handles invalid input gracefully by returning an appropriate error message.

@@ -1,3 +1,5 @@
+package ppdcoursework
+
 /**
  * Defines a constant character for a new line.
  * This is used to ensure consistent new line formatting across different output messages.
@@ -32,7 +34,7 @@ val EXIT_OPTIONS: Set<String> = setOf("exit", "end", "cancel", "stop", "quit") /
  *  *
  *  * user inputs "1" --> "The sum of cube numbers up to <n> cubed is ..."
  *  *
- *  * user inputs "3" --> ConversionService called, main() prints "<x> degrees <Fahrenheit/Celsius/Kelvin> is <y> degrees <Fahrenheit/Celsius/Kelvin>."
+ *  * user inputs "3" --> ConversionService called, ppdcoursework.main() prints "<x> degrees <Fahrenheit/Celsius/Kelvin> is <y> degrees <Fahrenheit/Celsius/Kelvin>."
  *
  * @return Unit
  */
@@ -40,11 +42,11 @@ fun main(): Unit {
 
     // Welcome message printed at the start of the program.
     printMessage("Welcome!", 4, NEW_LINE)
-    var endProgram: String = "1" // Controls the main program loop. "1" means continue, "2" means end.
+    var endProgram: String = "1" // Controls the ppdcoursework.main program loop. "1" means continue, "2" means end.
     val endOptions: Set<String> = setOf("1", "2")
-    // Main program loop: continues as long as the user wants to return to the main menu.
+    // Main program loop: continues as long as the user wants to return to the ppdcoursework.main menu.
     while (endProgram == "1") {
-        printMainMenu() // Display the main menu options to the user.
+        printMainMenu() // Display the ppdcoursework.main menu options to the user.
 
         // Get the user's choice for which command to run.
         var choice:String = getUserInput("Please select the command you want to run by typing the number:",4)
@@ -61,19 +63,19 @@ fun main(): Unit {
         // Execute the chosen command based on user input.
         when (choice) {
             "1" -> {
-                // Instantiate and execute the SumCommand.
+                // Instantiate and execute the ppdcoursework.SumCommand.
                 val sumCommand = SumCommand()
                 commandResult = sumCommand.execute()
             }
 
             "2" -> {
-                // Instantiate and execute the FactorialCommand.
+                // Instantiate and execute the ppdcoursework.FactorialCommand.
                 val factorialCommand: FactorialCommand = FactorialCommand()
                 commandResult = factorialCommand.execute()
             }
 
             "3" -> {
-                // Instantiate and execute the ConversionCommand.
+                // Instantiate and execute the ppdcoursework.ConversionCommand.
                 val conversionCommand: ConversionCommand = ConversionCommand()
                 commandResult = conversionCommand.execute()
             }
@@ -98,7 +100,7 @@ fun main(): Unit {
 }
 
 /**
- * Prints the main menu options to the console.
+ * Prints the ppdcoursework.main menu options to the console.
  * This function displays a list of available commands that the user can choose from.
  */
 fun printMainMenu(){

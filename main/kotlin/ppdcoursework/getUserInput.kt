@@ -1,3 +1,5 @@
+package ppdcoursework
+
 import kotlin.String
 
 /**
@@ -5,9 +7,9 @@ import kotlin.String
  *
  * ## Examples:
  *
- * getUserInput("Type the number 3 here. ") expects "3".
+ * ppdcoursework.getUserInput("Type the number 3 here. ") expects "3".
  *
- * getUserInput("Type the number 3 here. ") could return "Hello".
+ * ppdcoursework.getUserInput("Type the number 3 here. ") could return "Hello".
  *
  * @param message clear and concise to prompt the intended response.
  *
@@ -20,7 +22,7 @@ fun getUserInput(message:String, tabulations:Int = 0, endLine:Char = ' '  ): Str
 }
 
 /**
- * The printMessage function displays a message on the console.
+ * The ppdcoursework.printMessage function displays a message on the console.
  * The non-negative [tabs] parameter specifies the number
  * of tabs used to indent the message; the default is zero tabs.
  * There is also an optional end-of-line character parameter, which defaults to a whitespace.
@@ -34,7 +36,7 @@ fun printMessage(message:String, tabs:Int = 0, endLine:Char = ' '  ){
 }
 
 /**
- * The isExitCommand function checks if the [input] parameter is an exit command typed by the user.
+ * The ppdcoursework.isExitCommand function checks if the [input] parameter is an exit command typed by the user.
  * The input string is trimmed and converted to lowercase.
  * @param input the entered input
  * @return Boolean true if input is defined
