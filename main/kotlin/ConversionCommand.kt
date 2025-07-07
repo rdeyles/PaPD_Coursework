@@ -37,6 +37,33 @@ class ConversionCommand:Command {
     }
 
     /**
+     * Validates the temperature input value.
+     *
+     * Ensures the value is a valid number above absolute zero in the chosen temperature.
+     *
+     * ## Examples:
+     *
+     * validateTemp("banana", -273.15) = false
+     *
+     * validateTemp("-555", -273.15) = false
+     *
+     * validateTemp("456", -273.15) = true
+     *
+     * @param tempInput -- temperature value to convert
+     *
+     * @param minTemp -- the minimum temperature (absolute zero)
+     *
+     * @return Boolean -- true if the temperature input is possible to convert to Double type and above absolute zero.
+     */
+    fun validateTemp(tempInput: String, minTemp: Double): Boolean {
+        return when {
+            tempInput.toDoubleOrNull() == null -> false // Input cannot be converted to Double
+            tempInput.toDouble() < minTemp -> false // Input is below absolute zero
+            else -> true // Input is valid
+        }
+    }
+
+    /**
      * Converts between units of temperature, chosen from Celsius, Fahrenheit and Kelvin.
      *
      * ## Examples:
@@ -151,33 +178,7 @@ class ConversionCommand:Command {
         }
         val tempToConvert: Double = tempChoice.toDouble() // Convert tempChoice to double for computation in convertTemp()
         val tempResult: Double = convertTemp(unitChoice, tempToConvert) // Call convertTemp() to compute conversion.
-        return (resultToString(unitChoice, tempToConvert, tempResult)) // Return the computation result as a string message.
+        return resultToString(unitChoice, tempToConvert, tempResult) // Return the computation result as a string message.
     }
 
-    /**
-     * Validates the temperature input value.
-     *
-     * Ensures the value is a valid number above absolute zero in the chosen temperature.
-     *
-     * ## Examples:
-     *
-     * validateTemp("banana", -273.15) = false
-     *
-     * validateTemp("-555", -273.15) = false
-     *
-     * validateTemp("456", -273.15) = true
-     *
-     * @param tempInput -- temperature value to convert
-     *
-     * @param minTemp -- the minimum temperature (absolute zero)
-     *
-     * @return Boolean -- true if the temperature input is possible to convert to Double type and above absolute zero.
-     */
-    fun validateTemp(tempInput: String, minTemp: Double): Boolean {
-        return when {
-            tempInput.toDoubleOrNull() == null -> false // Input cannot be converted to Double
-            tempInput.toDouble() < minTemp -> false // Input is below absolute zero
-            else -> true // Input is valid
-        }
-    }
 }
