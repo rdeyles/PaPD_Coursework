@@ -9,6 +9,34 @@ import kotlin.math.round
  */
 class ConversionCommand:Command {
     /**
+     * Validates the unit choice to ensure it matches one of the options in the menu.
+     *
+     * Converts unit input to an int or null. If outside the range of options or not int, automatically returns false.
+     *
+     * ## Examples:
+     *
+     * validate("7", 7) = true
+     *
+     * validate("banana", 7) = false
+     *
+     * validate("8", 7) = false
+     *
+     * @param unitChoice -- chosen option from the ConversionCommand menu to validate.
+     *
+     * @param maxChoice -- maximum number fo choices available.
+     *
+     * @return Boolean -- true if the unit input matches any of the available choices in the ConversionCommand menu.
+     */
+    fun validateUnit(unitChoice: String, maxChoice: Int): Boolean {
+        return when {
+            unitChoice.toIntOrNull() == null -> false // Input cannot be converted to Int
+            unitChoice.toInt() < 1 -> false // Input is below the lowest option of 1
+            unitChoice.toInt() > maxChoice -> false // Input is beyond the range of available options
+            else -> true // Input is valid
+        }
+    }
+
+    /**
      * Converts between units of temperature, chosen from Celsius, Fahrenheit and Kelvin.
      *
      * ## Examples:
@@ -36,6 +64,41 @@ class ConversionCommand:Command {
         }
         temperatureConverted = round(temperatureConverted * 100.0) / 100.0
         return temperatureConverted
+    }
+
+    /**
+     * Prepares the units into string variables to be entered into a string separately.
+     *
+     * Uses the ConversionCommand menu choices as a reference (e.g., "1" indicates Celsius to Fahrenheit)
+     *
+     * Creates a message to return the result of the temperature conversion.
+     *
+     * ## Examples:
+     *
+     * resultToString("1", 123.0, 253.4) = "123.0 degrees Celsius is 253.4 degrees Fahrenheit"
+     *
+     * @param unitChoice -- chosen option from the ConversionCommand menu to split into the two units.
+     *
+     * @param tempToConvert -- temperature value to convert
+     *
+     * @param tempResult -- result value of temperature conversion
+     *
+     * @return String -- message highlighting the results of the temperature conversion
+     */
+    fun resultToString(unitChoice: String, tempToConvert: Double, tempResult: Double): String {
+        val firstUnit: String = when (unitChoice) { // Set the first unit for the output message.
+            "1", "2" -> "Celsius"
+            "3", "4" -> "Fahrenheit"
+            "5", "6" -> "Kelvin"
+            else -> EMPTY_MESSAGE
+        }
+        val secondUnit: String = when (unitChoice) { // Set the second unit for the output message.
+            "3", "5" -> "Celsius"
+            "1", "6" -> "Fahrenheit"
+            "2", "4" -> "Kelvin"
+            else -> EMPTY_MESSAGE
+        }
+        return "$tempToConvert degrees $firstUnit is $tempResult degrees $secondUnit"
     }
 
     /**
@@ -92,34 +155,6 @@ class ConversionCommand:Command {
     }
 
     /**
-     * Validates the unit choice to ensure it matches one of the options in the menu.
-     *
-     * Converts unit input to an int or null. If outside the range of options or not int, automatically returns false.
-     *
-     * ## Examples:
-     *
-     * validate("7", 7) = true
-     *
-     * validate("banana", 7) = false
-     *
-     * validate("8", 7) = false
-     *
-     * @param unitChoice -- chosen option from the ConversionCommand menu to validate.
-     *
-     * @param maxChoice -- maximum number fo choices available.
-     *
-     * @return Boolean -- true if the unit input matches any of the available choices in the ConversionCommand menu.
-     */
-    fun validateUnit(unitChoice: String, maxChoice: Int): Boolean {
-         return when {
-             unitChoice.toIntOrNull() == null -> false // Input cannot be converted to Int
-             unitChoice.toInt() < 1 -> false // Input is below the lowest option of 1
-             unitChoice.toInt() > maxChoice -> false // Input is beyond the range of available options
-             else -> true // Input is valid
-         }
-    }
-
-    /**
      * Validates the temperature input value.
      *
      * Ensures the value is a valid number above absolute zero in the chosen temperature.
@@ -144,40 +179,5 @@ class ConversionCommand:Command {
             tempInput.toDouble() < minTemp -> false // Input is below absolute zero
             else -> true // Input is valid
         }
-    }
-
-    /**
-     * Prepares the units into string variables to be entered into a string separately.
-     *
-     * Uses the ConversionCommand menu choices as a reference (e.g., "1" indicates Celsius to Fahrenheit)
-     *
-     * Creates a message to return the result of the temperature conversion.
-     *
-     * ## Examples:
-     *
-     * resultToString("1", 123.0, 253.4) = "123.0 degrees Celsius is 253.4 degrees Fahrenheit"
-     *
-     * @param unitChoice -- chosen option from the ConversionCommand menu to split into the two units.
-     *
-     * @param tempToConvert -- temperature value to convert
-     *
-     * @param tempResult -- result value of temperature conversion
-     *
-     * @return String -- message highlighting the results of the temperature conversion
-     */
-    fun resultToString(unitChoice: String, tempToConvert: Double, tempResult: Double): String {
-        val firstUnit: String = when (unitChoice) { // Set the first unit for the output message.
-            "1", "2" -> "Celsius"
-            "3", "4" -> "Fahrenheit"
-            "5", "6" -> "Kelvin"
-            else -> EMPTY_MESSAGE
-        }
-        val secondUnit: String = when (unitChoice) { // Set the second unit for the output message.
-            "3", "5" -> "Celsius"
-            "1", "6" -> "Fahrenheit"
-            "2", "4" -> "Kelvin"
-            else -> EMPTY_MESSAGE
-        }
-        return "$tempToConvert degrees $firstUnit is $tempResult degrees $secondUnit"
     }
 }
