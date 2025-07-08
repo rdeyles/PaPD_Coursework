@@ -29,7 +29,7 @@ val EXIT_OPTIONS: Set<String> = setOf("exit", "end", "cancel", "stop", "quit") /
  * @return readln() user input, input validation will be handled by the command classes.
  */
 
-fun getUserInput(message:String, tabulations:Int = 0, endLine:Char = ' '  ): String {
+fun getUserInput(message: String, tabulations: Int = 0, endLine: Char = ' '): String {
     printMessage(message,tabulations,endLine)
     return readln()
 }
@@ -44,7 +44,7 @@ fun getUserInput(message:String, tabulations:Int = 0, endLine:Char = ' '  ): Str
  * @param endLine default is a single space character
  *
  */
-fun printMessage(message:String, tabs:Int = 0, endLine:Char = ' '  ){
+fun printMessage(message: String, tabs:Int = 0, endLine: Char = ' '){
     print("${"\t".repeat(tabs)}${message}${endLine}")
 }
 
@@ -54,7 +54,7 @@ fun printMessage(message:String, tabs:Int = 0, endLine:Char = ' '  ){
  * @param input the entered input
  * @return Boolean true if input is defined
  */
-fun isExitCommand(input:String):Boolean {
+fun isExitCommand(input: String): Boolean {
     return input.trimMargin().lowercase() in EXIT_OPTIONS
 }
 
@@ -76,7 +76,7 @@ fun printMainMenu(){
  * Prints the result of an executed command to the console, followed by an empty line for better readability.
  * @param result The `String` containing the message or output from the executed command.
  */
-fun printResult(result:String){
+fun printResult(result: String){
     printMessage(result,4,NEW_LINE)
     println()
 }
@@ -107,7 +107,8 @@ fun main(): Unit {
     // Welcome message printed at the start of the program.
     printMessage("Welcome!", 4, NEW_LINE)
     var endProgram: String = "1" // Controls the main program loop. "1" means continue, "2" means end.
-    val endOptions: Set<String> = setOf("1", "2")
+    val endOptions: Set<String> = setOf("1", "2") // Sets the main program loop options.
+    val choices: Set<String> = setOf("1", "2", "3") // Sets the main menu options.
     // Main program loop: continues as long as the user wants to return to the main menu.
     while (endProgram == "1") {
         printMainMenu() // Display the main menu options to the user.
@@ -116,7 +117,6 @@ fun main(): Unit {
         var choice:String = getUserInput("Please select the command you want to run by typing the number:",4)
 
         // Validation to ensure only a number from the options is chosen.
-        val choices: Set<String> = setOf("1", "2", "3") // Numbers to minimise input requirements.
         while (choice !in choices) {
             choice = getUserInput(
                 "Please type either 1, 2 or 3:",4
@@ -128,7 +128,7 @@ fun main(): Unit {
         when (choice) {
             "1" -> {
                 // Instantiate and execute the SumCommand.
-                val sumCommand = SumCommand()
+                val sumCommand: SumCommand = SumCommand()
                 commandResult = sumCommand.execute()
             }
 
