@@ -8,6 +8,8 @@ import kotlin.math.round
  * returning a formatted string result or an exit message.
  */
 class ConversionCommand:Command {
+    val exitMessage: String = "Exiting the temperature conversion process." // Avoiding repetition of early exit message.
+
     /**
      * Validates the unit choice to ensure it matches one of the options in the menu.
      *
@@ -161,11 +163,11 @@ class ConversionCommand:Command {
             unitChoice = getUserInput("Invalid input, enter a number from the options.")
         }
         if (unitChoice.toInt() == maxChoice) { // Exits the command early.
-            return "Exiting the temperature conversion process."
+            return exitMessage
         }
         var tempChoice: String = getUserInput("Enter the value you wish to convert:")
         if (isExitCommand(tempChoice)) { // Exits the command early.
-            return "Exiting the temperature conversion process."
+            return exitMessage
         }
         val minTemp: Double = when (unitChoice) { // Sets the minimum temperature at absolute zero.
             "1", "2" -> -273.15 // Celsius.
